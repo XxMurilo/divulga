@@ -1,0 +1,37 @@
+TRIGGER NECESSARIOS PARA O BANCO DE DADOS/SITE 
+O TRIGGERS VAO SER BASEADOS NO CRUD
+
+C CREATE - CRIAR 
+R READ - LISTA
+U UPDATE - ATUALIZAR
+D DELETE - DELETAR
+
+VIEW
+ 
+1 - Listagem de doações disponíveis
+2 - Lista da Reserva do recebidor
+3 - Lista das próprias doações 
+4 - Lista de denuncias do admin
+5 - Pagina de todos os usuários para o admin
+6 - Relatório admin (Quantidade)
+7 - Lista reserva admin
+
+TRIGGERS
+
+1 - Reduzir a quantidade do disponível quando o alimento for reservado(AFTER UPDATEReseva)
+2 - Devolver a quantidade que foi cancelada inicialmente quando for cancelado(Botao Cancelar)
+3 - Bloquear a reserva caso a reserva for maior que o disponível
+4 - Caso o disponível chegue a 0 apague o item da doação
+5 - Caso o item chegue a validade ele sera retirado da lista disponíveis
+6 - Bloquear quantidades que sejam 0 ou negativas
+7 - Bloquear email duplicado (Para o login)
+8 - Preencher automaticamente a data da denuncia
+9 - Ao cadastrar um item ele terá o Status de disponível automaticamente
+
+FUNCTION
+
+1 - Select do estoque disponível
+2 - A função retorna 1 para alimento vencido e 0 para não vencido
+3 - verificar permissão do usuário id 1 para admin, 2 para doador e 3 recebedor
+4 - Verificar na tabela de reservas do usuário se o numero de reservas realizadas e 
+maior que 5 se for menor de 5 deixar reservar o item, mas igual ou maior que 5 não deixar   
