@@ -6,80 +6,125 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f5f5f5;
     color: #222;
 }
 
 /* HEADER */
-header {
+.topo {
     width: 100%;
-    padding: 35px 50px;
+    padding: 25px 60px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     background-color: white;
-    border-bottom: 2px solid #ccc;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.logo h1 {
+.logo {
     font-size: 28px;
+    font-weight: bold;
+    color: #2c7a4b;
 }
 
-nav {
+/* BOTÕES */
+.botoes {
     display: flex;
     gap: 15px;
 }
 
-nav button {
-    padding: 10px 20px;
+.botoes button {
+    padding: 12px 24px;
 
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
 
-    background-color: #222;
+    background-color: #2c7a4b;
     color: white;
 
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: bold;
+
     cursor: pointer;
 
     transition: 0.3s;
 }
 
-nav button:hover {
-    background-color: #444;
+/* EFEITO AO PASSAR O MOUSE */
+.botoes button:hover {
+    background-color: #23633d;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* CONTEÚDO */
-main {
-    padding: 60px 40px;
+.conteudo {
+    width: 100%;
 
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 80px 20px;
 }
 
-.banner {
-    width: 100%;
-    max-width: 1000px;
-
-    padding: 80px 40px;
+/* CARD PRINCIPAL */
+.descricao {
+    width: 80%;
+    max-width: 1400px;
 
     background-color: white;
 
-    border-radius: 12px;
+    padding: 80px;
 
-    text-align: center;
+    border-radius: 18px;
 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-.banner h2 {
-    font-size: 48px;
-    margin-bottom: 20px;
+/* TEXTO */
+.descricao h1 {
+    font-size: 42px;
+    line-height: 1.5;
+
+    font-weight: bold;
+
+    text-align: left;
+}
+/* BOTÕES ABAIXO DO CARD */
+.acoes {
+    margin-top: 30px;
+
+    display: flex;
+    gap: 20px;
 }
 
-.banner p {
-    font-size: 18px;
-    line-height: 1.6;
+.acoes button {
+    padding: 14px 32px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #2c7a4b;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.acoes button:hover {
+    background-color: #23633d;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
 }
