@@ -1,0 +1,106 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* HEADER */
+
+.topo{
+    width: 100%;
+    padding: 25px 60px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    background-color: white;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.logo{
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c7a4b;
+}
+
+/* AREA LOGIN */
+
+.areaLogin{
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 80px;
+}
+
+.login{
+    width: 500px;
+
+    background-color: white;
+
+    padding: 40px;
+
+    border-radius: 12px;
+
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+}
+
+.login h1{
+    text-align: center;
+
+    margin-bottom: 30px;
+
+    color: #222;
+}
+
+.login form{
+    display: flex;
+    flex-direction: column;
+}
+
+.login input,
+.login select{
+    width: 100%;
+
+    padding: 14px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+.login button{
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #4CAF50;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.login button:hover{
+    background-color: #3d8b40;
+}
