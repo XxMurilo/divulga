@@ -1,117 +1,52 @@
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
+body{
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f5f5f5;
-    color: #222;
+    background-color: #f0f0f0;
 }
 
 /* HEADER */
-.topo {
+
+.topo{
     width: 100%;
-    padding: 25px 60px;
+    height: 100px;
+
+    background-color: #4CAF50;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
-    background-color: white;
 
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 0 40px;
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    color: #2c7a4b;
-}
-
-/* BOTÕES */
-.botoes {
-    display: flex;
-    gap: 15px;
-}
-
-.botoes button {
-    padding: 12px 24px;
-
-    border: none;
-    border-radius: 8px;
-
-    background-color: #2c7a4b;
+.logo{
     color: white;
 
-    font-size: 15px;
+    font-size: 28px;
     font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.3s;
 }
 
-/* EFEITO AO PASSAR O MOUSE */
-.botoes button:hover {
-    background-color: #23633d;
+/* BOTOES HEADER */
 
-    transform: translateY(-2px);
-
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* CONTEÚDO */
-.conteudo {
-    width: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding: 80px 20px;
-}
-
-/* CARD PRINCIPAL */
-.descricao {
-    width: 80%;
-    max-width: 1400px;
-
-    background-color: white;
-
-    padding: 80px;
-
-    border-radius: 18px;
-
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-/* TEXTO */
-.descricao h1 {
-    font-size: 42px;
-    line-height: 1.5;
-
-    font-weight: bold;
-
-    text-align: left;
-}
-/* BOTÕES ABAIXO DO CARD */
-.acoes {
-    margin-top: 30px;
-
+.botoesHeader{
     display: flex;
     gap: 20px;
 }
 
-.acoes button {
-    padding: 14px 32px;
+.botoesHeader button{
+    padding: 12px 25px;
 
     border: none;
     border-radius: 8px;
 
-    background-color: #2c7a4b;
-    color: white;
+    background-color: white;
+
+    color: #4CAF50;
 
     font-size: 16px;
     font-weight: bold;
@@ -121,10 +56,101 @@ body {
     transition: 0.3s;
 }
 
-.acoes button:hover {
-    background-color: #23633d;
+.botoesHeader button:hover{
+    background-color: #e6e6e6;
+}
 
-    transform: translateY(-2px);
+/* CONTEUDO */
 
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+.conteudo{
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+
+    padding: 20px 40px 40px 40px;
+}
+
+.descricao{
+    width: 95%;
+
+    min-height: 650px;
+
+    background-color: white;
+
+    border-radius: 12px;
+
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+
+    display: flex;
+
+    overflow: hidden;
+}
+
+/* LADO ESQUERDO */
+
+.ladoEsquerdo{
+    width: 50%;
+
+    padding: 60px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ladoEsquerdo h1{
+    font-size: 50px;
+
+    color: #222;
+
+    margin-bottom: 40px;
+
+    font-weight: bold;
+}
+
+.ladoEsquerdo p{
+    color: #444;
+
+    font-size: 22px;
+
+    line-height: 42px;
+
+    text-align: left;
+}
+
+/* LADO DIREITO */
+
+.ladoDireito{
+    width: 50%;
+
+    background-color: #4CAF50;
+
+    color: white;
+
+    padding: 60px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.ladoDireito h2{
+    font-size: 55px;
+
+    font-weight: bold;
+
+    margin-bottom: 40px;
+
+    margin-top: 20px;
+}
+
+.ladoDireito p{
+    font-size: 28px;
+
+    line-height: 55px;
+
+    text-align: left;
+
+    margin-top: 20px;
 }
