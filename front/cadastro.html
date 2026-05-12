@@ -10,7 +10,10 @@
 
     <header class="topo">
         <div class="logo">
-            Divulgando Perecível
+             Seeds of Good
+         </div>
+        <div class="VoltarInicio">
+            <button onclick="window.location.href='telaInicial.html'">Voltar para o início</button>
         </div>
     </header>
 
@@ -22,36 +25,32 @@
 
             <form>
 
-                <input type="text" placeholder="Nome Completo">
+                <input type="text" placeholder="Nome Completo" required>
 
-                <input type="email" placeholder="Email">
+                <input type="email" placeholder="Email" required>
 
-                <input type="text" placeholder="Telefone">
+                <input type="text" placeholder="Telefone" required>
 
-                <input type="text" placeholder="Endereço">
+                <input type="text" placeholder="Endereço" required>
 
-                <input type="text" placeholder="CPF ou CNPJ">
+                <input type="text" placeholder="CPF ou CNPJ" required>
 
-                <input type="text" placeholder="Autentificação">
+                <input type="text" placeholder="Autentificação" required>
 
-                <input type="password" placeholder="Senha">
+                <input type="password" placeholder="Senha" required>
 
-                <select>
-                    <option>Cidade</option>
+                <select name="cidade" id="cidade">
                     <option>Ribeirão Preto</option>
                     <option>Sertãozinho</option>
                 </select>
 
-                <select>
-                    <option>Tipo de Usuário</option>
+                <select name="tipoUsuario" id="tipoUsuario">
                     <option>Doador</option>
                     <option>Recebedor</option>
                     <option>Administrador</option>
                 </select>
 
-                <button type="submit">
-                    Cadastrar
-                </button>
+                <button id="btnCadastrar" type="submit">Cadastrar</button>
 
             </form>
 

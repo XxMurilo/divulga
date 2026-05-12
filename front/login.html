@@ -21,14 +21,13 @@
 
             <form>
 
-                <input type="email" placeholder="Email">
+                <input type="email" placeholder="Email" required>
 
-                <input type="text" placeholder="CPF ou CNPJ">
+                <input type="text" placeholder="CPF ou CNPJ" required>
 
-                <input type="password" placeholder="Senha">
+                <input type="password" placeholder="Senha" required>
 
-                <select>
-                    <option>Tipo de Usuário</option>
+                <select name="tipoUsuario" id="tipoUsuario">
                     <option>Doador</option>
                     <option>Recebedor</option>
                     <option>Administrador</option>

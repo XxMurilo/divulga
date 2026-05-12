@@ -1,12 +1,29 @@
-*{
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@300;400;600&display=swap');
+
+:root {
+    --verde-escuro: #1b4332;
+    --verde-medio: #2d6a4f;
+    --verde-claro: #74c69d;
+    --verde-palido: #d8f3dc;
+    --branco: #ffffff;
+    --cinza-fundo: #f4f9f6;
+    --texto-suave: #4a6358;
+}
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f0f0f0;
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--cinza-fundo);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(116,198,157,0.12) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(45,106,79,0.10) 0%, transparent 50%);
+    min-height: 100vh;
+    color: var(--texto-suave);
 }
 
 /* HEADER */
@@ -14,20 +31,64 @@ body{
 .topo{
     width: 100%;
     padding: 25px 60px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
-    background-color: white;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+    box-shadow: 0 4px 20px rgba(27, 67, 50, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .logo{
-    font-size: 28px;
-    font-weight: bold;
-    color: #2c7a4b;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--branco);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo::before {
+    content: '🌿';
+    font-size: 1.3rem;
+}
+
+.VoltarInicio button {
+    /* Define o espaçamento interno do botão (superior/inferior 10px, esquerda/direita 24px) */
+    padding: 10px 24px;
+    /* Remove a cor de fundo, deixando apenas a borda visível */
+    background-color: transparent;
+    /* Define a cor do texto em branco */
+    color: var(--branco);
+    /* Cria uma borda branca com 2px de espessura e transparência de 60% */
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    /* Deixa as bordas completamente arredondadas em formato de cápsula */
+    border-radius: 50px;
+    /* Define o tamanho da fonte do texto do botão */
+    font-size: 14px;
+    /* Deixa o texto mais denso para melhor legibilidade */
+    font-weight: 600;
+    /* Muda o cursor para apontador ao passar sobre o botão */
+    cursor: pointer;
+    /* Aplica transição suave em todas as propriedades (duração 0.3s) */
+    transition: all 0.3s ease;
+    /* Aumenta ligeiramente o espaço entre as letras */
+    letter-spacing: 0.01em;
+}
+
+.VoltarInicio button:hover {
+    /* Ao passar o mouse, o fundo fica semi-transparente com branco fraco */
+    background-color: rgba(255, 255, 255, 0.15);
+    /* A borda fica completamente branca e opaca no hover */
+    border-color: var(--branco);
+    /* Move o botão 2px para cima, criando efeito de elevação */
+    transform: translateY(-2px);
+    /* Adiciona sombra quando o botão é ativado para dar profundidade */
+    box-shadow: 0 6px 16px rgba(27, 67, 50, 0.2);
 }
 
 /* AREA CADASTRO */
@@ -44,22 +105,17 @@ body{
 
 .cadastro{
     width: 500px;
-
-    background-color: white;
-
+    background: var(--branco);
     padding: 40px;
-
-    border-radius: 12px;
-
-    box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(27, 67, 50, 0.12);
+    border: 1px solid rgba(116, 198, 157, 0.2);
 }
 
 .cadastro h1{
     text-align: center;
-
     margin-bottom: 30px;
-
-    color: #222;
+    color: var(--verde-escuro);
 }
 
 .cadastro form{
@@ -70,37 +126,31 @@ body{
 .cadastro input,
 .cadastro select{
     width: 100%;
-
     padding: 14px;
-
     margin-bottom: 18px;
-
-    border: 1px solid #ccc;
-    border-radius: 8px;
-
+    border: 1px solid rgba(27, 67, 50, 0.15);
+    border-radius: 12px;
+    background: #f7faf6;
     font-size: 15px;
+    color: var(--texto-suave);
 }
 
 .cadastro button{
     width: 100%;
-
     padding: 14px;
-
-    border: none;
-    border-radius: 8px;
-
-    background-color: #4CAF50;
-
-    color: white;
-
+    border: 2px solid var(--verde-claro);
+    border-radius: 12px;
+    background-color: var(--verde-claro);
+    color: var(--verde-escuro);
     font-size: 16px;
     font-weight: bold;
-
     cursor: pointer;
-
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 .cadastro button:hover{
-    background-color: #3d8b40;
+    background-color: #95d5b2;
+    border-color: #95d5b2;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(116, 198, 157, 0.25);
 }
