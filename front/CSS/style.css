@@ -312,7 +312,6 @@ a:hover {
     color: var(--branco);
     padding: 24px 48px;
     text-align: center;
-    border-radius: 0 0 20px 20px;
     border-top: 1px solid rgba(255,255,255,0.14);
 }
 
