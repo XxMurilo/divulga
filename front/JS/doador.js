@@ -1,4 +1,14 @@
 const alimentos = [];
+const tiposAlimento = document.getElementById('tipo');
+const nome = document.getElementById('nome');
+const quantidade = document.getElementById('quantidade');
+const descricao = document.getElementById('descricao');
+
+const btnAlterar = document.getElementById('btnAlterar');
+btnAlterar.addEventListener('click', alterarAlimento);
+
+
+
 
 function abrirModal() {
     document.getElementById('overlay').classList.add('ativo');
@@ -10,17 +20,17 @@ function fecharModal() {
 }
 
 function limparForm() {
-    document.getElementById('tipo').value = '';
-    document.getElementById('nome').value = '';
-    document.getElementById('quantidade').value = '';
-    document.getElementById('descricao').value = '';
+    tiposAlimento.value = '';
+    nome.value = '';
+    quantidade.value = '';
+    descricao.value = '';
 }
 
 function salvarAlimento() {
-    const tipo = document.getElementById('tipo').value.trim();
-    const nome = document.getElementById('nome').value.trim();
-    const qtd  = parseInt(document.getElementById('quantidade').value);
-    const desc = document.getElementById('descricao').value.trim();
+    const tipo = tiposAlimento.value.trim();
+    const nome = nome.value.trim();
+    const qtd  = parseInt(quantidade.value);
+    const desc = descricao.value.trim();
 
     if (!tipo || !nome || !qtd || qtd < 1 || !desc) {
         alert('Por favor, preencha todos os campos.');
