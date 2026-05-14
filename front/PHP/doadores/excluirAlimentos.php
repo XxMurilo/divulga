@@ -25,7 +25,7 @@ if (!isset($_GET['idalimento'])) {
 $idalimento = intval($_GET['idalimento']);
 
 try{
-    $sql = "DELETE FROM Alimento WHERE IDALIMENTO = :idalimento AND IDUSUARIO = :idusuario";
+    $sql = "DELETE FROM Alimento_doador WHERE IDALIMENTO_DOADOR = :idalimento AND IDUSUARIO = :idusuario";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':idalimento', $idalimento, PDO::PARAM_INT);
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);

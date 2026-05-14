@@ -17,10 +17,17 @@ if (!isset($_SESSION['idusuario'])) {
 }
 
 try{
-    $sql = "SELECT a.IDALIMENTO AS id, a.NOME AS nome, t.IDTIPO AS tipo_id, t.NOME AS tipo
-            FROM Alimento a
+    $sql = "SELECT ad.IDALIMENTO_DOADOR AS id,
+                   a.NOME AS nome,
+                   t.IDTIPO AS tipo_id,
+                   t.NOME AS tipo,
+                   ad.QUANTIDADE AS quantidade,
+                   ad.VALIDADE AS validade,
+                   ad.DESCRICAO AS descricao
+            FROM Alimento_doador ad
+            JOIN Alimento a ON ad.IDALIMENTO = a.IDALIMENTO
             JOIN Tipo t ON a.IDTIPO = t.IDTIPO
-            WHERE a.IDUSUARIO = :idusuario
+            WHERE ad.IDUSUARIO = :idusuario
             ORDER BY a.NOME ASC";
 
     $stmt = $pdo->prepare($sql);

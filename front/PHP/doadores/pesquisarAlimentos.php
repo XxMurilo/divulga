@@ -15,8 +15,9 @@ if (!isset($_SESSION['idusuario'])) {
         [
             'erro' => 'Não autorizado.',
             'mensagem' => 'Faça login para acessar este recurso.'
-         ]),
-         JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT;
+         ],
+         JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT
+    );
     exit;
 }
 

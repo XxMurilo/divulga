@@ -3,51 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro</title>
-
     <link rel="stylesheet" href="CSS/cadastro.css">
 </head>
 <body>
 
     <header class="topo">
-        <div class="logo">
-             Seeds of Good
-         </div>
+        <div class="logo">Seeds of Good</div>
         <div class="VoltarInicio">
             <button id="btnVoltar" onclick="window.location.href='telaInicial.html'">Voltar para o início</button>
         </div>
     </header>
 
     <div class="areaCadastro">
-
         <div class="cadastro">
 
-            <h1 id="tituloCadastro">Cadastro</h1>
+            <h1>Cadastro</h1>
 
-            <form id="formCadastro">
+            <!-- action aponta para o PHP; method POST para não expor dados na URL -->
+            <form action="PHP/cadastro.php" method="POST">
 
-                <input type="text" placeholder="Nome Completo" required>
+                <input type="text" name="nome" placeholder="Nome Completo" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="telefone" placeholder="Telefone" required>
+                <input type="text" name="endereco" placeholder="Endereço" required>
+                <input type="text" name="identificacao" placeholder="CPF ou CNPJ" required>
 
-                <input type="email" placeholder="Email" required>
+                <!-- Doadores podem deixar em branco; recebedores devem preencher -->
+                <input type="text" name="autentificacao" placeholder="Autentificação (comprovante de renda — obrigatório para recebedores)">
 
-                <input type="text" placeholder="Telefone" required>
-
-                <input type="text" placeholder="Endereço" required>
-
-                <input type="text" id="cpfCnpj" placeholder="CPF ou CNPJ" maxlength="18" required>
-
-                <input type="text" id="autenticacaoForm" placeholder="Autentificação" required>
-
-                <input type="password" placeholder="Senha" required>
+                <input type="password" name="senha" placeholder="Senha (mínimo 6 caracteres)" required>
 
                 <select name="cidade" id="cidade">
-                    <option>Ribeirão Preto</option>
-                    <option>Sertãozinho</option>
+                    <option value="Ribeirão Preto">Ribeirão Preto</option>
+                    <option value="Sertãozinho">Sertãozinho</option>
                 </select>
 
                 <select name="tipoUsuario" id="tipoUsuario">
-                    <option>Doador</option>
-                    <option>Recebedor</option>
-                    <option>Administrador</option>
+                    <option value="Doador">Doador</option>
+                    <option value="Recebedor">Recebedor</option>
+                    <option value="Administrador">Administrador</option>
                 </select>
 
                 <button id="btnCadastrar" type="submit">Cadastrar</button>
@@ -55,7 +49,6 @@
             </form>
 
         </div>
-
     </div>
 
 </body>

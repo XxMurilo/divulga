@@ -30,25 +30,37 @@ $idalimento = intval($_GET['idalimento']);
 
 try{
 
-    if (!isset($_POST['nome']) || !isset($_POST['tipo_id'])) {
+    if (!isset($_POST['quantidade']) || !isset($_POST['validade']) || !isset($_POST['descricao'])) {
         echo json_encode(
             [
                 'erro' => true,
-                'mensagem' => 'Parâmetros "nome" e "tipo_id" são obrigatórios para alteração.'
+                'mensagem' => 'Parâmetros "quantidade", "validade" e "descricao" são obrigatórios para alteração.'
              ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
         exit;
     }
      
-    $nome = trim($_POST['nome']);
-    $tipo_id = intval($_POST['tipo_id']);
+    $quantidade = intval($_POST['quantidade']);
+    $validade = trim($_POST['validade']);
+    $descricao = trim($_POST['descricao']);
 
-    $sql = "UPDATE Alimento 
-            SET NOME = :nome, IDTIPO = :tipo_id 
-            WHERE IDALIMENTO = :idalimento AND IDUSUARIO = :idusuario";
+    $validadeDate = DateTime::createFromFormat('Y-m-d', $validade);
+    if (!$validadeDate || $validadeDate->format('Y-m-d') !== $validade) {
+        echo json_encode(
+            [
+                'erro' => true,
+                'mensagem' => 'O campo "validade" deve estar no formato YYYY-MM-DD.'
+             ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    $sql = "UPDATE Alimento_doador 
+            SET VALIDADE = :validade, QUANTIDADE = :quantidade, DESCRICAO = :descricao 
+            WHERE IDALIMENTO_DOADOR = :idalimento AND IDUSUARIO = :idusuario";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
-    $stmt->bindParam(':tipo_id', $tipo_id, PDO::PARAM_INT);
+    $stmt->bindParam(':validade', $validade, PDO::PARAM_STR);
+    $stmt->bindParam(':quantidade', $quantidade, PDO::PARAM_INT);
+    $stmt->bindParam(':descricao', $descricao, PDO::PARAM_STR);
     $stmt->bindParam(':idalimento', $idalimento, PDO::PARAM_INT);
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);
     $stmt->execute();
