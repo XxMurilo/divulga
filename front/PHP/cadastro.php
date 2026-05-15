@@ -16,6 +16,7 @@ $email          = trim($_POST['email']         ?? '');
 $telefone       = trim($_POST['telefone']      ?? '');
 $endereco       = trim($_POST['endereco']      ?? '');
 $identificacao  = trim($_POST['identificacao'] ?? '');   // CPF ou CNPJ
+$identificacao = preg_replace('/\D/', '', $identificacao); // Limpa pontuação
 $senha = trim($_POST['senha']?? '');   // doc comprobatório (pode ser vazio para doadores)
 $cidade         = trim($_POST['cidade']        ?? '');
 $tipoUsuario    = trim($_POST['tipoUsuario']   ?? '');
@@ -29,6 +30,65 @@ if ($telefone === '')      $erros[] = 'Telefone é obrigatório.';
 if ($endereco === '')      $erros[] = 'Endereço é obrigatório.';
 if ($identificacao === '') $erros[] = 'CPF ou CNPJ é obrigatório.';
 if (strlen($senha) < 6)   $erros[] = 'A senha deve ter pelo menos 6 caracteres.';
+
+if (strlen($identificacao) !== 11 && strlen($identificacao) !== 14) {
+    $erros[] = 'Esse documento não é CPF nem CNPJ';
+}
+
+// se for CNPJ
+if (strlen($identificacao) === 14) {
+
+    $url = "https://brasilapi.com.br/api/cnpj/v1/{$identificacao}";
+
+    $contexto = stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'timeout' => 10
+        ]
+    ]);
+
+    $resposta = @file_get_contents($url, false, $contexto);
+
+    // erro na API
+    if ($resposta === false) {
+
+        $erros[] = 'Erro ao acessar API do CNPJ.';
+
+    } else {
+
+        $empresa = json_decode($resposta, true);
+
+        // verifica situação cadastral
+        if (
+            !isset($empresa['descricao_situacao_cadastral']) ||
+            $empresa['descricao_situacao_cadastral'] !== 'ATIVA'
+        ) {
+            $erros[] = 'Esta empresa não está ativa.';
+        }
+
+        // valida natureza jurídica
+        if (isset($empresa['codigo_natureza_juridica'])) {
+
+            $cod = $empresa['codigo_natureza_juridica'];
+
+            if (
+                (str_starts_with($cod, '2') && $tipoUsuario === 'Recebedor') ||
+                (str_starts_with($cod, '3') && $tipoUsuario === 'Doador')
+            ) {
+                $erros[] = 'Tipo de Pessoa Jurídica não condizente com a função solicitada';
+            }
+        }
+    }
+}
+
+// exibir erros
+if (!empty($erros)) {
+
+    foreach ($erros as $erro) {
+        echo $erro . "<br>";
+    }
+
+}
  
 if (!empty($erros)) {
     // Volta para o formulário exibindo os erros
