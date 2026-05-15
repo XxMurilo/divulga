@@ -80,15 +80,6 @@ if (strlen($identificacao) === 14) {
         }
     }
 }
-
-// exibir erros
-if (!empty($erros)) {
-
-    foreach ($erros as $erro) {
-        echo $erro . "<br>";
-    }
-
-}
  
 if (!empty($erros)) {
     // Volta para o formulário exibindo os erros
