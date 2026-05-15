@@ -76,7 +76,9 @@ if ($permissao === 'doador') {
     header('Location: /divulgaxampp/front/doadorLogado.html');
 } elseif ($permissao === 'administrador') {
     header('Location: /divulgaxampp/front/adminLogado.html');
-} else {
+} elseif ($permissao === 'recebedor') {
+    header('Location: /divulgaxampp/front/adminLogado.html');
+}else {
     header('Location: /divulgaxampp/front/telaInicial.html');
 }
  

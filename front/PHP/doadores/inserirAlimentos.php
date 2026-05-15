@@ -1,78 +1,113 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+
 session_start();
+
+header('Content-Type: application/json; charset=utf-8');
+
 require_once '../conexaoBD.php';
 
 if (!isset($_SESSION['idusuario'])) {
+
     http_response_code(401);
-    echo json_encode(
-        [
-            'erro' => 'Não autorizado.',
-            'mensagem' => 'Faça login para acessar este recurso.'
-         ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
+
+    echo json_encode([
+        'erro' => true,
+        'mensagem' => 'Usuário não autenticado.'
+    ]);
+
     exit;
 }
 
-if (!isset($_GET['idalimento'])) {
-    echo json_encode(
-        [
-            'erro' => true,
-            'mensagem' => 'Parâmetro "idalimento" é obrigatório para Inserção da doação.'
-        ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
-    exit;
-}
+try {
 
-try{
+    $nome = trim($_POST['nome'] ?? '');
+    $tipo = trim($_POST['tipo'] ?? '');
 
-    if (!isset($_POST['quantidade']) || !isset($_POST['validade']) || !isset($_POST['descricao'])) {
-        echo json_encode(
-            [
-                'erro' => true,
-                'mensagem' => 'Parâmetros "quantidade", "validade" e "descricao" são obrigatórios para Inserção da doação.'
-             ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
-        exit;
-    }
+    $quantidade = trim($_POST['quantidade'] ?? '');
+    $validade = trim($_POST['validade'] ?? '');
+    $descricao = trim($_POST['descricao'] ?? '');
 
-    $idalimento = intval($_GET['idalimento']);
-    $quantidade = intval($_POST['quantidade']);
-    $validade = trim($_POST['validade']);
-    $descricao = trim($_POST['descricao']);
+    $idusuario = $_SESSION['idusuario'];
 
-    $validadeDate = DateTime::createFromFormat('Y-m-d', $validade);
-    if (!$validadeDate || $validadeDate->format('Y-m-d') !== $validade) {
-        echo json_encode(
-            [
-                'erro' => true,
-                'mensagem' => 'O campo "validade" deve estar no formato YYYY-MM-DD.'
-             ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
-        exit;
-    }
+    // ── VERIFICA SE ALIMENTO JÁ EXISTE ──
 
-    $sql = "INSERT INTO Alimento_doador (VALIDADE, QUANTIDADE, DESCRICAO, IDUSUARIO, IDALIMENTO) 
-            VALUES (:validade, :quantidade, :descricao, :idusuario, :idalimento)";
+    $sql = "SELECT IDALIMENTO
+            FROM Alimento
+            WHERE NOME = :nome
+            AND IDTIPO = :tipo";
+
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':validade', $validade, PDO::PARAM_STR);
-    $stmt->bindParam(':quantidade', $quantidade, PDO::PARAM_INT);
-    $stmt->bindParam(':descricao', $descricao, PDO::PARAM_STR);
-    $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);
-    $stmt->bindParam(':idalimento', $idalimento, PDO::PARAM_INT);
-    $stmt->execute();
 
-    echo json_encode(
-        [
-            'sucesso' => true,
-            'mensagem' => 'Doação inserida com sucesso.'
-         ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
+    $stmt->execute([
+        ':nome' => $nome,
+        ':tipo' => $tipo
+    ]);
 
+    $alimento = $stmt->fetch();
+
+    // ── SE NÃO EXISTIR, CRIA ──
+
+    if (!$alimento) {
+
+        $sql = "INSERT INTO Alimento
+                (NOME, IDTIPO)
+                VALUES
+                (:nome, :tipo)";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute([
+            ':nome' => $nome,
+            ':tipo' => $tipo
+        ]);
+
+        $idalimento = $pdo->lastInsertId();
+
+    } else {
+
+        $idalimento = $alimento['IDALIMENTO'];
+    }
+
+    // ── INSERE DOAÇÃO ──
+
+    $sql = "INSERT INTO Alimento_doador
+            (
+                VALIDADE,
+                QUANTIDADE,
+                DESCRICAO,
+                IDUSUARIO,
+                IDALIMENTO
+            )
+            VALUES
+            (
+                :validade,
+                :quantidade,
+                :descricao,
+                :idusuario,
+                :idalimento
+            )";
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute([
+        ':validade'   => $validade,
+        ':quantidade' => $quantidade,
+        ':descricao'  => $descricao,
+        ':idusuario'  => $idusuario,
+        ':idalimento' => $idalimento
+    ]);
+
+    echo json_encode([
+        'sucesso' => true,
+        'mensagem' => 'Alimento cadastrado com sucesso.'
+    ]);
 
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(
-        [
-            'erro' => true,
-            'mensagem' => $e->getMessage()
-         ], JSON_UNESCAPED_UNICODE, JSON_PRETTY_PRINT);
-    exit;
-}
 
-?>
+    http_response_code(500);
+
+    echo json_encode([
+        'erro' => true,
+        'mensagem' => $e->getMessage()
+    ]);
+}

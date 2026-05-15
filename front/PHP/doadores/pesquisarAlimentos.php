@@ -67,12 +67,12 @@ try {
     $sql = "SELECT a.IDALIMENTO AS id, a.NOME AS nome, t.IDTIPO AS tipo_id, t.NOME AS tipo
             FROM Alimento a
             INNER JOIN Tipo t ON t.IDTIPO = a.IDTIPO
-            WHERE a.NOME LIKE :nome
+            WHERE a.NOME LIKE :nome AND t.IDTIPO = :tipo
             ORDER BY a.NOME ASC
             LIMIT 20";
     $stmt = $pdo->prepare($sql);
 
-    $stmt->execute([':nome' => '%' . $nome . '%']);
+    $stmt->execute([':nome' => '%' . $nome . '%', ':tipo' => $tipo]);
     echo json_encode(
         [
          'sucesso' => true,
