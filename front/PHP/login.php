@@ -2,24 +2,24 @@
 session_start();
 header('Content-Type: text/html; charset=utf-8');
 require_once 'conexaoBD.php';
- 
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../login.html');
     exit;
 }
- 
+
 // ── 1. Coleta dos campos ──────────────────────────────────────────────────────
 $email         = trim($_POST['email']        ?? '');
-$identificacao = trim($_POST['identificacao']?? '');
+$identificacao = trim($_POST['identificacao'] ?? '');
 $senha         = $_POST['senha']             ?? '';
 $tipoUsuario   = trim($_POST['tipoUsuario']  ?? '');
- 
+
 // ── 2. Validações básicas ─────────────────────────────────────────────────────
 $erros = [];
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $erros[] = 'E-mail inválido.';
 if ($identificacao === '') $erros[] = 'CPF ou CNPJ é obrigatório.';
 if ($senha === '')         $erros[] = 'Senha é obrigatória.';
- 
+
 if (!empty($erros)) {
     $mensagem = implode('<br>', $erros);
     echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'>
@@ -28,10 +28,10 @@ if (!empty($erros)) {
           <a href='../login.html'>← Voltar</a></body></html>";
     exit;
 }
- 
+
 // ── 3. Busca o usuário no banco ───────────────────────────────────────────────
 try {
- 
+
     $stmt = $pdo->prepare("
         SELECT u.IDUSUARIO, u.NOME, u.SENHA, p.NOME AS PERMISSAO
         FROM Usuario u
@@ -45,7 +45,7 @@ try {
         ':ident' => $identificacao,
     ]);
     $usuario = $stmt->fetch();
- 
+
     // Verifica se o usuário existe e se a senha está correta
     if (!$usuario || !password_verify($senha, $usuario['SENHA'])) {
         echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'>
@@ -54,7 +54,7 @@ try {
               <a href='../login.html'>← Voltar</a></body></html>";
         exit;
     }
- 
+
     // Verifica se o tipo de usuário selecionado bate com o do banco
     if (strtolower($usuario['PERMISSAO']) !== strtolower($tipoUsuario)) {
         echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'>
@@ -63,25 +63,24 @@ try {
               <a href='../login.html'>← Voltar</a></body></html>";
         exit;
     }
- 
+
     // ── 4. Inicia sessão ──────────────────────────────────────────────────────
     $_SESSION['idusuario'] = $usuario['IDUSUARIO'];
     $_SESSION['nome']      = $usuario['NOME'];
     $_SESSION['permissao'] = $usuario['PERMISSAO'];
- 
+
     // ── 5. Redireciona conforme a permissão ───────────────────────────────────
     $permissao = strtolower($usuario['PERMISSAO']);
 
-if ($permissao === 'doador') {
-    header('Location: /divulgaxampp/front/doadorLogado.html');
-} elseif ($permissao === 'administrador') {
-    header('Location: /divulgaxampp/front/adminLogado.html');
-} elseif ($permissao === 'recebedor') {
-    header('Location: /divulgaxampp/front/adminLogado.html');
-}else {
-    header('Location: /divulgaxampp/front/telaInicial.html');
-}
- 
+    if ($permissao === 'doador') {
+        header('Location: /divulga/front/doadorLogado.html');
+    } elseif ($permissao === 'administrador') {
+        header('Location: /divulga/front/adminLogado.html');
+    } elseif ($permissao === 'recebedor') {
+        header('Location: /divulga/front/recebedorLogado.html');
+    } else {
+        header('Location: /divulga/front/telaInicial.html');
+    }
 } catch (PDOException $e) {
     http_response_code(500);
     echo "Erro no login: " . htmlspecialchars($e->getMessage());
