@@ -1,5 +1,7 @@
 <?php
-require_once 'conexaoBD.php';
+require_once '../conexaoBD.php';
+
+header('Content-Type: application/json; charset=utf-8');
 
 $tabelaP = $_GET['table'] ?? '';
 
@@ -15,21 +17,18 @@ try {
         $tabela = 'Denuncia';
 
     } else {
-        die('Tabela não encontrada.');
+        echo json_encode(["erro" => "Tabela não encontrada"]);
+        exit;
     }
 
-    // Consulta
     $stmt = $pdo->prepare("SELECT * FROM $tabela");
-
     $stmt->execute();
 
     $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    header('Content-Type: application/json');
-
     echo json_encode($dados);
 
 } catch (PDOException $e) {
-
-    echo 'Erro: ' . $e->getMessage();
+    http_response_code(500);
+    echo json_encode(["erro" => $e->getMessage()]);
 }

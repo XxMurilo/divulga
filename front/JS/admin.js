@@ -1,15 +1,21 @@
 async function carregarTabela(param) {
     const resposta = await fetch(
-        `../PHP/administradores/adminTables.php?table=${encodeURIComponent(param)}`
+        `PHP/administradores/adminTables.php?table=${encodeURIComponent(param)}`
     );
 
     const dados = await resposta.json();
 
     // 1. Validação caso a matriz venha vazia
     if (!dados || dados.length === 0) {
-        document.getElementById('TabelView').innerHTML = "<p>Nenhum dado encontrado.</p>";
+        document.getElementById('TableView').innerHTML = "<p>Nenhum dado encontrado.</p>";
         return;
     }
+
+    if (dados.erro) {
+    document.getElementById('TableView').innerHTML =
+        `<p>${dados.erro}</p>`;
+    return;
+}
 
     // 2. Extrai o nome das colunas dinamicamente a partir da primeira linha
     const colunas = Object.keys(dados[0]);
