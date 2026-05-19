@@ -11,76 +11,145 @@
 
     <!-- HEADER -->
     <header class="topo">
-        <div class="logo"> Seeds of Good</div>
+        <div class="logo">Seeds of Good</div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Doações</a></li>
-                <li><a href="#">Minha Conta</a></li>
+                <li><a href="#" class="nav-link ativo" data-secao="doacoes">Doações</a></li>
+                <li><a href="#" class="nav-link" data-secao="reservas">Minhas Reservas</a></li>
+                <li><a href="#" class="nav-link" data-secao="conta">Minha Conta</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main>
-
-        <button class="btn-novo" onclick="abrirModal()">
-             Cadastrar Novo Alimento
-        </button>
-
+    <!-- SEÇÃO: DOAÇÕES -->
+    <main id="secao-doacoes" class="secao ativa">
+        <button class="btn-novo" id="btnNovo">+ Cadastrar Novo Alimento</button>
         <h2 class="secao-titulo">Seus alimentos disponíveis</h2>
-
+        <p id="mensagem" class="msg-status"></p>
         <div id="listaAlimentos">
-            <div class="lista-vazia" id="msgVazia">
-                <span></span>
+            <div class="lista-vazia" id="msgVazia" style="display:none">
+                <span>🌱</span>
                 Nenhum alimento cadastrado ainda.<br>Clique em "Cadastrar Novo Alimento" para começar.
             </div>
             <div class="lista" id="lista"></div>
         </div>
     </main>
 
-    <!-- MODAL FORMULÁRIO -->
+    <!-- SEÇÃO: MINHAS RESERVAS -->
+    <main id="secao-reservas" class="secao">
+        <h2 class="secao-titulo">Minhas Reservas</h2>
+        <p class="secao-subtitulo">Veja quem reservou seus alimentos e gerencie o status de cada reserva.</p>
+        <p id="mensagemReservas" class="msg-status"></p>
+        <div id="listaReservas">
+            <div class="lista-vazia" id="msgVaziaReservas" style="display:none">
+                <span>🌱</span>
+                Nenhuma reserva encontrada.<br>Quando alguém reservar seus alimentos, aparecerá aqui.
+            </div>
+            <div class="lista" id="listaReservasCards"></div>
+        </div>
+    </main>
+
+    <!-- SEÇÃO: MINHA CONTA -->
+    <main id="secao-conta" class="secao">
+        <h2 class="secao-titulo">Minha Conta</h2>
+        <p class="secao-subtitulo">Gerencie suas informações pessoais.</p>
+        <p id="mensagemConta" class="msg-status"></p>
+        <div class="conta-wrapper">
+
+            <!-- Visualização -->
+            <div class="conta-card" id="cardVisualizacao">
+                <div class="conta-avatar" id="avatarInicial">?</div>
+                <div class="conta-dados" id="dadosConta">
+                    <p class="carregando-conta">Carregando dados...</p>
+                </div>
+                <div class="conta-acoes">
+                    <button class="btn-editar-conta" id="btnEditarConta">✏️ Editar dados</button>
+                    <button class="btn-sair" id="btnSair">← Sair da conta</button>
+                </div>
+            </div>
+
+            <!-- Edição -->
+            <div class="conta-card conta-form" id="cardEdicao" style="display:none">
+                <h3 class="form-titulo">Editar Dados</h3>
+                <div class="campo">
+                    <label>Nome completo</label>
+                    <input type="text" id="editNome" placeholder="Seu nome" maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>E-mail</label>
+                    <input type="email" id="editEmail" placeholder="seu@email.com" maxlength="255">
+                </div>
+                <div class="campo">
+                    <label>Telefone</label>
+                    <input type="text" id="editTelefone" placeholder="(11) 99999-9999" maxlength="30">
+                </div>
+                <div class="campo">
+                    <label>Endereço</label>
+                    <input type="text" id="editEndereco" placeholder="Rua, número, bairro" maxlength="150">
+                </div>
+                <div class="campo">
+                    <label>Nova senha <span class="campo-opcional">(deixe em branco para manter a atual)</span></label>
+                    <input type="password" id="editSenha" placeholder="••••••" maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>Confirmar nova senha</label>
+                    <input type="password" id="editSenhaConfirm" placeholder="••••••" maxlength="100">
+                </div>
+                <div class="acoes-modal">
+                    <button type="button" class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
+                    <button type="button" class="btn-salvar" id="btnSalvarConta">Salvar alterações</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL ALIMENTO -->
     <div class="overlay" id="overlay">
         <div class="modal">
-            <h2> Novo Alimento para Doação</h2>
+            <h2 id="tituloModal">Novo Alimento para Doação</h2>
+            <input type="hidden" id="idAlimentoDoador">
+            <form id="formAlimento">
+                <div class="campo">
+                    <label>Tipo de Alimento</label>
+                    <select id="tipo"><option value="">Selecione o tipo...</option></select>
+                </div>
+                <div class="campo">
+                    <label>Nome do Alimento</label>
+                    <input type="text" id="nome" placeholder="Ex: Banana, Arroz, Leite..." maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>Quantidade (unidades)</label>
+                    <input type="number" id="quantidade" min="1" placeholder="Ex: 10">
+                </div>
+                <div class="campo">
+                    <label>Validade</label>
+                    <input type="date" id="validade">
+                </div>
+                <div class="campo">
+                    <label>Descrição</label>
+                    <textarea id="descricao" placeholder="Ex: Cada unidade equivale a aproximadamente 1 kg." maxlength="500"></textarea>
+                </div>
+                <div class="acoes-modal">
+                    <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn-salvar">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            <div class="campo">
-                <label>Tipo de Alimento</label>
-                <select id="tipo">
-                    <option value="">Selecione o tipo...</option>
-                    <option>Fruta</option>
-                    <option>Verdura</option>
-                    <option>Legume</option>
-                    <option>Grão / Cereal</option>
-                    <option>Laticínio</option>
-                    <option>Pão / Massa</option>
-                    <option>Outro</option>
-                </select>
-            </div>
-
-            <div class="campo">
-                <label>Nome do Alimento</label>
-                <input type="text" id="nome" placeholder="Ex: Banana, Arroz, Leite..." maxlength="50">
-            </div>
-
-            <div class="campo">
-                <label>Quantidade (unidades)</label>
-                <input type="number" id="quantidade" min="1" placeholder="Ex: 10">
-            </div>
-
-            <div class="campo">
-                <label>Descrição (peso/kg por unidade)</label>
-                <textarea id="descricao" placeholder="Ex: Cada unidade equivale a aproximadamente 1 kg. Produto fechado e em bom estado." maxlength="500"></textarea>
-            </div>
-
+    <!-- MODAL CONFIRMAR SAÍDA -->
+    <div class="overlay" id="overlayLogout">
+        <div class="modal modal-pequeno">
+            <h2>Sair da conta?</h2>
+            <p class="modal-texto">Você será redirecionado para a tela inicial.</p>
             <div class="acoes-modal">
-                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-                <button class="btn-salvar" onclick="salvarAlimento()">Salvar</button>
+                <button class="btn-cancelar" id="btnCancelarLogout">Cancelar</button>
+                <button class="btn-sair-confirmar" id="btnConfirmarLogout">Sair</button>
             </div>
         </div>
     </div>
 
     <script src="JS/doador.js"></script>
-
 </body>
 </html>

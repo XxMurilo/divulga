@@ -106,8 +106,8 @@ INSERT INTO Condicao  (NOME) VALUES ('Ativo'), ('Inativo'), ('Pendente');
 INSERT INTO Estado    (NOME, SIGLA) VALUES ('São Paulo', 'SP'), ('Minas Gerais', 'MG'), ('Bahia', 'BA');
 INSERT INTO Cidade    (NOME, IDESTADO) VALUES ('Ribeirão Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
 INSERT INTO Status    (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado');
-INSERT INTO Tipo      (NOME) VALUES ('Não perecível'), ('Perecível'), ('Bebida');
-INSERT INTO Alimento  (NOME, IDTIPO) VALUES ('Arroz Integral', 1), ('Alface', 2), ('Suco de Laranja', 3);
+INSERT INTO Tipo      (NOME) VALUES ('Verduras'), ('Legumes'), ('Frutas'), ('Grãos'), ('Carnes'), ('Peixes'), ('Ovos'), ('Laticínios'), ('Massas'), ('Pães'), ('Bebidas'), ('Doces'), ('Temperos'), ('Congelados'), ('Embutidos'), ('Enlatados');
+INSERT INTO Alimento  (NOME, IDTIPO) VALUES ('Arroz Integral', 4), ('Alface', 1), ('Suco de Laranja', 11);
 
 /*========================================================================================--*/
 
