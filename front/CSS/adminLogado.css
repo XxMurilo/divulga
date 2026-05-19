@@ -62,3 +62,21 @@ nav ul li a {
 nav ul li a:hover {
     color: #fff;
 }
+
+/* ── TAB ── */
+.tablesTab {
+    margin-top: 3vh;
+    margin-left: 3vh;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 0px;
+} 
+
+.tablesTab button {
+    padding: 1%;
+    color: var(--branco);
+    font-size: .9rem;
+    background-color: #2d6a4f;
+    border: 0px;
+}
