@@ -1,301 +1,410 @@
-// ── Elementos do DOM ──────────────────────────────────────────────────────────
-const corpoTabela = document.getElementById('corpoTabela');
-const mensagem = document.getElementById('mensagem');
-const btnNovo = document.getElementById('btnNovo');
-const btnAtualizar = document.getElementById('btnAtualizar');
-const modal = document.getElementById('overlay');
-const tituloModal = document.getElementById('tituloModal');
-const formAlimento = document.getElementById('formAlimento');
-const fecharModal = document.getElementById('fecharModal');
-const btnCancelar = document.getElementById('btnCancelar');
+// ══════════════════════════════════════════════════════════════════
+//  Seeds of Good — Doador SPA
+// ══════════════════════════════════════════════════════════════════
 
-const idAlimentoInput = document.getElementById('idAlimentoDoador');
-const tiposAlimento = document.getElementById('tipo');
-const nomeInput = document.getElementById('nome');
-const quantidadeInput = document.getElementById('quantidade');
-const validadeInput = document.getElementById('validade');
-const descricaoInput = document.getElementById('descricao');
+// ── Navegação entre seções ─────────────────────────────────────────
+const navLinks = document.querySelectorAll('.nav-link');
+const secoes   = document.querySelectorAll('.secao');
 
-// ── Eventos ───────────────────────────────────────────────────────────────────
-btnAtualizar.addEventListener('click', listarAlimentos);
-btnNovo.addEventListener('click', abrirModalNovo);
-formAlimento.addEventListener('submit', salvarAlimento);
-fecharModal.addEventListener('click', fecharJanelaModal);
-btnCancelar.addEventListener('click', fecharJanelaModal);
+navLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const alvo = this.dataset.secao;
+        navLinks.forEach(function(l) { l.classList.remove('ativo'); });
+        secoes.forEach(function(s)   { s.classList.remove('ativa'); });
+        this.classList.add('ativo');
+        document.getElementById('secao-' + alvo).classList.add('ativa');
 
-modal.addEventListener('click', function (event) {
-    if (event.target === modal) {
-        fecharJanelaModal();
-    }
+        if (alvo === 'reservas') carregarReservas();
+        if (alvo === 'conta')    carregarConta();
+    });
 });
 
-// ── LISTAR ────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: DOAÇÕES
+// ══════════════════════════════════════════════════════════════════
+const mensagem     = document.getElementById('mensagem');
+const lista        = document.getElementById('lista');
+const msgVazia     = document.getElementById('msgVazia');
+const overlay      = document.getElementById('overlay');
+const tituloModal  = document.getElementById('tituloModal');
+const formAlimento = document.getElementById('formAlimento');
+const idAlimentoInput = document.getElementById('idAlimentoDoador');
+const tiposAlimento   = document.getElementById('tipo');
+const nomeInput       = document.getElementById('nome');
+const quantidadeInput = document.getElementById('quantidade');
+const validadeInput   = document.getElementById('validade');
+const descricaoInput  = document.getElementById('descricao');
+
+document.getElementById('btnNovo').addEventListener('click', abrirModalNovo);
+document.getElementById('btnCancelar').addEventListener('click', fecharJanelaModal);
+formAlimento.addEventListener('submit', salvarAlimento);
+overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) fecharJanelaModal();
+});
+
 function listarAlimentos() {
-    console.log('Listar Alimentos');
-    corpoTabela.innerHTML = '';
-    mensagem.innerText = 'Carregando...';
+    lista.innerHTML = '';
+    msgVazia.style.display = 'none';
+    mensagem.textContent = 'Carregando...';
 
     fetch('PHP/doadores/listarAlimentos.php')
-        .then(function (resposta) {
-            if (resposta.status === 401) {
-                window.location.href = '../login.html';
-                return;
-            }
-            return resposta.json();
+        .then(function(r) {
+            if (r.status === 401) { window.location.href = 'login.html'; return; }
+            return r.json();
         })
-        .then(function (dados) {
-            mensagem.innerText = '';
-
+        .then(function(dados) {
+            mensagem.textContent = '';
             if (!dados) return;
-
-            if (dados.erro) {
-                mensagem.innerText = dados.mensagem;
-                return;
-            }
-
+            if (dados.erro) { mensagem.textContent = dados.mensagem; return; }
             if (dados.alimentos.length === 0) {
-                mensagem.innerText = 'Nenhum alimento cadastrado ainda.';
+                msgVazia.style.display = 'block';
                 return;
             }
-
-            dados.alimentos.forEach(function (alimento) {
-                criarLinhaTabela(alimento);
-            });
+            dados.alimentos.forEach(criarCardAlimento);
         })
-        .catch(function (erro) {
-            console.error('Erro ao listar alimentos:', erro);
-            mensagem.innerText = 'Erro ao carregar alimentos.';
-        });
+        .catch(function() { mensagem.textContent = 'Erro ao carregar alimentos.'; });
 }
 
-// ── CRIAR LINHA DA TABELA ─────────────────────────────────────────────────────
-function criarLinhaTabela(alimento) {
-    const linha = document.createElement('tr');
+function criarCardAlimento(alimento) {
+    const card = document.createElement('div');
+    card.className = 'card-alimento';
 
-    const colunaId = document.createElement('td');
-    const colunaNome = document.createElement('td');
-    const colunaTipo = document.createElement('td');
-    const colunaQtd = document.createElement('td');
-    const colunaValidade = document.createElement('td');
-    const colunaDesc = document.createElement('td');
-    const colunaAcoes = document.createElement('td');
+    const validade = alimento.validade
+        ? new Date(alimento.validade + 'T00:00:00').toLocaleDateString('pt-BR')
+        : '—';
 
-    colunaId.innerText = alimento.id;
-    colunaNome.innerText = alimento.nome;
-    colunaTipo.innerText = alimento.tipo;
-    colunaQtd.innerText = alimento.quantidade;
-    colunaValidade.innerText = alimento.validade;
-    colunaDesc.innerText = alimento.descricao;
+    card.innerHTML =
+        '<div class="card-info">' +
+            '<h3>' + esc(alimento.nome) + '</h3>' +
+            '<p>Validade: ' + validade + ' · ' + esc(alimento.descricao || '') + '</p>' +
+        '</div>' +
+        '<div class="card-tags">' +
+            '<span class="tag">' + esc(alimento.tipo) + '</span>' +
+            '<span class="tag tag-qtd">' + alimento.quantidade + ' un.</span>' +
+        '</div>' +
+        '<div class="card-botoes">' +
+            '<button class="btn-alterar" title="Alterar">✏️</button>' +
+            '<button class="btn-remover" title="Excluir">🗑️</button>' +
+        '</div>';
 
-    const btnAlterar = document.createElement('button');
-    btnAlterar.innerText = 'ALTERAR';
-    btnAlterar.className = 'btn-alterar';
-    btnAlterar.addEventListener('click', function () {
+    card.querySelector('.btn-alterar').addEventListener('click', function() {
         abrirModalAlterar(alimento);
     });
-
-    const btnExcluir = document.createElement('button');
-    btnExcluir.innerText = 'EXCLUIR';
-    btnExcluir.className = 'btn-remover';
-    btnExcluir.addEventListener('click', function () {
+    card.querySelector('.btn-remover').addEventListener('click', function() {
         excluirAlimento(alimento);
     });
 
-    colunaAcoes.appendChild(btnAlterar);
-    colunaAcoes.appendChild(btnExcluir);
-
-    linha.appendChild(colunaId);
-    linha.appendChild(colunaNome);
-    linha.appendChild(colunaTipo);
-    linha.appendChild(colunaQtd);
-    linha.appendChild(colunaValidade);
-    linha.appendChild(colunaDesc);
-    linha.appendChild(colunaAcoes);
-
-    corpoTabela.appendChild(linha);
+    lista.appendChild(card);
 }
 
-// ── MODAL NOVO ────────────────────────────────────────────────────────────────
 function abrirModalNovo() {
-    tituloModal.innerText = 'Novo Alimento para Doação';
+    tituloModal.textContent = 'Novo Alimento para Doação';
     idAlimentoInput.value = '';
     nomeInput.disabled = false;
     tiposAlimento.disabled = false;
     formAlimento.reset();
-    modal.style.display = 'flex';
+    overlay.style.display = 'flex';
     nomeInput.focus();
 }
 
-// ── MODAL ALTERAR ─────────────────────────────────────────────────────────────
 function abrirModalAlterar(alimento) {
-    tituloModal.innerText = 'Alterar Alimento';
-    idAlimentoInput.value = alimento.id;
-    nomeInput.value = alimento.nome;
-    tiposAlimento.value = alimento.tipo_id;
-    quantidadeInput.value = alimento.quantidade;
-    validadeInput.value = alimento.validade;
-    descricaoInput.value = alimento.descricao;
-
-    // Nome e tipo não podem ser alterados, apenas quantidade, validade e descrição
-    nomeInput.disabled = true;
-    tiposAlimento.disabled = true;
-
-    modal.style.display = 'flex';
+    tituloModal.textContent = 'Alterar Alimento';
+    idAlimentoInput.value   = alimento.id;
+    nomeInput.value         = alimento.nome;
+    tiposAlimento.value     = alimento.tipo_id;
+    quantidadeInput.value   = alimento.quantidade;
+    validadeInput.value     = alimento.validade;
+    descricaoInput.value    = alimento.descricao;
+    nomeInput.disabled      = true;
+    tiposAlimento.disabled  = true;
+    overlay.style.display   = 'flex';
 }
 
-// ── FECHAR MODAL ──────────────────────────────────────────────────────────────
 function fecharJanelaModal() {
-    modal.style.display = 'none';
+    overlay.style.display = 'none';
     formAlimento.reset();
-    idAlimentoInput.value = '';
-    nomeInput.disabled = false;
+    idAlimentoInput.value  = '';
+    nomeInput.disabled     = false;
     tiposAlimento.disabled = false;
-    tituloModal.innerText = 'Novo Alimento para Doação';
+    tituloModal.textContent = 'Novo Alimento para Doação';
 }
 
-// ── SALVAR (INSERT / UPDATE) ──────────────────────────────────────────────────
-function salvarAlimento(evento) {
-    evento.preventDefault();
+function salvarAlimento(e) {
+    e.preventDefault();
+    const id = idAlimentoInput.value;
 
-    const idAlimentoDoador = idAlimentoInput.value;
-
-    if (idAlimentoDoador === '') {
-
-        mensagem.innerText = 'Inserindo alimento...';
-
+    if (id === '') {
+        mensagem.textContent = 'Inserindo alimento...';
         fetch('PHP/doadores/inserirAlimentos.php', {
-
             method: 'POST',
-
             body: new URLSearchParams({
-
-                nome: nomeInput.value.trim(),
-
-                tipo: tiposAlimento.value,
-
+                nome:       nomeInput.value.trim(),
+                tipo:       tiposAlimento.value,
                 quantidade: quantidadeInput.value,
-
-                validade: validadeInput.value,
-
-                descricao: descricaoInput.value
+                validade:   validadeInput.value,
+                descricao:  descricaoInput.value
             })
         })
-            .then(function (resposta) {
-
-                return resposta.json();
-            })
-            .then(function (dados) {
-
-                if (dados.erro) {
-
-                    mensagem.innerText = dados.mensagem;
-
-                    return;
-                }
-
-                mensagem.innerText = dados.mensagem;
-
-                fecharJanelaModal();
-
-                listarAlimentos();
-            })
-            .catch(function (erro) {
-
-                console.log(erro);
-
-                mensagem.innerText =
-                    'Erro ao processar a resposta do Servidor.';
-            });
-
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+            mensagem.textContent = dados.mensagem;
+            if (!dados.erro) { fecharJanelaModal(); listarAlimentos(); }
+        })
+        .catch(function() { mensagem.textContent = 'Erro ao processar resposta.'; });
     } else {
-        // ── ALTERAR ──
-        mensagem.innerText = 'Alterando alimento...';
-
-        fetch('PHP/doadores/alterarAlimentos.php?idalimento=' + idAlimentoDoador, {
+        mensagem.textContent = 'Alterando alimento...';
+        fetch('PHP/doadores/alterarAlimentos.php?idalimento=' + id, {
             method: 'POST',
             body: new URLSearchParams({
                 quantidade: quantidadeInput.value,
-                validade: validadeInput.value,
-                descricao: descricaoInput.value
+                validade:   validadeInput.value,
+                descricao:  descricaoInput.value
             })
         })
-            .then(function (resposta) {
-                return resposta.json();
-            })
-            .then(function (dados) {
-                if (dados.erro) {
-                    mensagem.innerText = dados.mensagem;
-                    return;
-                }
-                mensagem.innerText = dados.mensagem;
-                fecharJanelaModal();
-                listarAlimentos();
-            })
-            .catch(function (erro) {
-                console.log(erro);
-                mensagem.innerText = 'Erro ao processar a resposta do Servidor.';
-            });
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+            mensagem.textContent = dados.mensagem;
+            if (!dados.erro) { fecharJanelaModal(); listarAlimentos(); }
+        })
+        .catch(function() { mensagem.textContent = 'Erro ao processar resposta.'; });
     }
 }
 
-// ── EXCLUIR ───────────────────────────────────────────────────────────────────
 function excluirAlimento(alimento) {
-    const confirmar = confirm('Deseja realmente excluir o alimento "' + alimento.nome + '"?');
-
-    if (!confirmar) return;
-
-    mensagem.innerText = 'Excluindo alimento...';
-
+    if (!confirm('Deseja realmente excluir o alimento "' + alimento.nome + '"?')) return;
+    mensagem.textContent = 'Excluindo...';
     fetch('PHP/doadores/excluirAlimentos.php?idalimento=' + alimento.id)
-        .then(function (resposta) {
-            return resposta.json();
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+            mensagem.textContent = dados.mensagem;
+            if (!dados.erro) listarAlimentos();
         })
-        .then(function (dados) {
-            if (dados.erro) {
-                mensagem.innerText = dados.mensagem;
-                return;
-            }
-            mensagem.innerText = dados.mensagem;
-            listarAlimentos();
-        })
-        .catch(function (erro) {
-            console.log(erro);
-            mensagem.innerText = 'Erro ao processar a resposta do Servidor.';
-        });
+        .catch(function() { mensagem.textContent = 'Erro ao excluir.'; });
 }
 
 function carregarTipos() {
-
     fetch('PHP/doadores/pesquisarAlimentos.php?tipos=1')
-        .then(function (resposta) {
-            return resposta.json();
-        })
-        .then(function (dados) {
-
-            if (dados.erro) {
-                mensagem.innerText = dados.mensagem;
-                return;
-            }
-
-            tiposAlimento.innerHTML =
-                '<option value="">Selecione o tipo...</option>';
-
-            dados.tipos.forEach(function (tipo) {
-
-                const option = document.createElement('option');
-
-                option.value = tipo.id;
-                option.textContent = tipo.nome;
-
-                tiposAlimento.appendChild(option);
+        .then(function(r) { return r.json(); })
+        .then(function(dados) {
+            if (dados.erro) return;
+            tiposAlimento.innerHTML = '<option value="">Selecione o tipo...</option>';
+            dados.tipos.forEach(function(tipo) {
+                const opt = document.createElement('option');
+                opt.value       = tipo.id;
+                opt.textContent = tipo.nome;
+                tiposAlimento.appendChild(opt);
             });
-        })
-        .catch(function (erro) {
-            console.log(erro);
-            mensagem.innerText = 'Erro ao carregar tipos.';
         });
 }
 
-// ── INICIAR ───────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: MINHAS RESERVAS
+// ══════════════════════════════════════════════════════════════════
+const mensagemReservas   = document.getElementById('mensagemReservas');
+const listaReservasCards = document.getElementById('listaReservasCards');
+const msgVaziaReservas   = document.getElementById('msgVaziaReservas');
+
+function carregarReservas() {
+    listaReservasCards.innerHTML = '';
+    msgVaziaReservas.style.display = 'none';
+    mensagemReservas.textContent = 'Carregando reservas...';
+
+    fetch('PHP/doadores/listarReservas.php')
+        .then(function(r) {
+            if (r.status === 401) { window.location.href = 'login.html'; return; }
+            return r.json();
+        })
+        .then(function(dados) {
+            mensagemReservas.textContent = '';
+            if (!dados) return;
+            if (dados.erro) { mensagemReservas.textContent = dados.mensagem; return; }
+            if (dados.reservas.length === 0) {
+                msgVaziaReservas.style.display = 'block';
+                return;
+            }
+            dados.reservas.forEach(criarCardReserva);
+        })
+        .catch(function() { mensagemReservas.textContent = 'Erro ao carregar reservas.'; });
+}
+
+function criarCardReserva(reserva) {
+    const card = document.createElement('div');
+    card.className = 'card-alimento card-reserva';
+
+    const statusClasse = {
+        'Disponível': 'status-disponivel',
+        'Reservado':  'status-reservado',
+        'Cancelado':  'status-cancelado'
+    }[reserva.status] || '';
+
+    card.innerHTML =
+        '<div class="card-info">' +
+            '<h3>' + esc(reserva.alimento_nome) + '</h3>' +
+            '<p>Reservado por: <strong>' + esc(reserva.recebedor_nome) + '</strong></p>' +
+            '<p>Contato: ' + esc(reserva.recebedor_email || '') +
+                (reserva.recebedor_telefone ? ' · ' + esc(reserva.recebedor_telefone) : '') +
+            '</p>' +
+        '</div>' +
+        '<div class="card-tags">' +
+            '<span class="tag tag-qtd">' + reserva.quantidade_reservada + ' un.</span>' +
+            '<span class="tag ' + statusClasse + '">' + esc(reserva.status) + '</span>' +
+        '</div>' +
+        '<div class="card-botoes reserva-botoes">' +
+            (reserva.status === 'Reservado'
+                ? '<button class="btn-confirmar-reserva" data-id="' + reserva.idreserva + '">✔ Confirmar</button>' +
+                  '<button class="btn-cancelar-reserva"  data-id="' + reserva.idreserva + '">✖ Cancelar</button>'
+                : '') +
+        '</div>';
+
+    const btnConfirmar = card.querySelector('.btn-confirmar-reserva');
+    const btnCancelar  = card.querySelector('.btn-cancelar-reserva');
+    if (btnConfirmar) btnConfirmar.addEventListener('click', function() {
+        atualizarStatusReserva(reserva.idreserva, 1); // 1 = Disponível (entregue)
+    });
+    if (btnCancelar) btnCancelar.addEventListener('click', function() {
+        atualizarStatusReserva(reserva.idreserva, 3); // 3 = Cancelado
+    });
+
+    listaReservasCards.appendChild(card);
+}
+
+function atualizarStatusReserva(idreserva, idstatus) {
+    mensagemReservas.textContent = 'Atualizando...';
+    fetch('PHP/doadores/atualizarReserva.php', {
+        method: 'POST',
+        body: new URLSearchParams({ idreserva: idreserva, idstatus: idstatus })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(dados) {
+        mensagemReservas.textContent = dados.mensagem;
+        if (!dados.erro) carregarReservas();
+    })
+    .catch(function() { mensagemReservas.textContent = 'Erro ao atualizar reserva.'; });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: MINHA CONTA
+// ══════════════════════════════════════════════════════════════════
+const dadosConta       = document.getElementById('dadosConta');
+const avatarInicial    = document.getElementById('avatarInicial');
+const cardVisualizacao = document.getElementById('cardVisualizacao');
+const cardEdicao       = document.getElementById('cardEdicao');
+const mensagemConta    = document.getElementById('mensagemConta');
+
+document.getElementById('btnEditarConta').addEventListener('click', function() {
+    cardVisualizacao.style.display = 'none';
+    cardEdicao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
+document.getElementById('btnCancelarEdicao').addEventListener('click', function() {
+    cardEdicao.style.display = 'none';
+    cardVisualizacao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
+document.getElementById('btnSalvarConta').addEventListener('click', salvarConta);
+
+// ── Logout ────────────────────────────────────────────────────────
+const overlayLogout = document.getElementById('overlayLogout');
+
+document.getElementById('btnSair').addEventListener('click', function() {
+    overlayLogout.style.display = 'flex';
+});
+document.getElementById('btnCancelarLogout').addEventListener('click', function() {
+    overlayLogout.style.display = 'none';
+});
+document.getElementById('btnConfirmarLogout').addEventListener('click', function() {
+    fetch('PHP/logout.php')
+        .then(function()  { window.location.href = 'telaInicial.html'; })
+        .catch(function() { window.location.href = 'telaInicial.html'; });
+});
+overlayLogout.addEventListener('click', function(e) {
+    if (e.target === overlayLogout) overlayLogout.style.display = 'none';
+});
+
+function carregarConta() {
+    dadosConta.innerHTML = '<p class="carregando-conta">Carregando dados...</p>';
+    fetch('PHP/doadores/minhaConta.php')
+        .then(function(r) {
+            if (r.status === 401) { window.location.href = 'login.html'; return; }
+            return r.json();
+        })
+        .then(function(dados) {
+            if (!dados || dados.erro) {
+                dadosConta.innerHTML = '<p>Erro ao carregar dados.</p>';
+                return;
+            }
+            const u = dados.usuario;
+            avatarInicial.textContent = u.nome ? u.nome.charAt(0).toUpperCase() : '?';
+
+            dadosConta.innerHTML =
+                '<div class="dado-item"><span class="dado-label">Nome</span><span class="dado-valor">'         + esc(u.nome)          + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">E-mail</span><span class="dado-valor">'        + esc(u.email)         + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">Telefone</span><span class="dado-valor">'      + esc(u.telefone)      + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">Endereço</span><span class="dado-valor">'      + esc(u.endereco)      + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">CPF/CNPJ</span><span class="dado-valor">'      + esc(u.identificacao) + '</span></div>';
+
+            // Preenche o formulário de edição
+            document.getElementById('editNome').value     = u.nome;
+            document.getElementById('editEmail').value    = u.email;
+            document.getElementById('editTelefone').value = u.telefone;
+            document.getElementById('editEndereco').value = u.endereco;
+        })
+        .catch(function() { dadosConta.innerHTML = '<p>Erro ao carregar dados.</p>'; });
+}
+
+function salvarConta() {
+    const senha        = document.getElementById('editSenha').value;
+    const senhaConfirm = document.getElementById('editSenhaConfirm').value;
+
+    if (senha && senha !== senhaConfirm) {
+        mensagemConta.textContent = 'As senhas não coincidem.';
+        mensagemConta.style.color = '#e57373';
+        return;
+    }
+
+    mensagemConta.textContent = 'Salvando...';
+    mensagemConta.style.color = '';
+
+    fetch('PHP/doadores/atualizarConta.php', {
+        method: 'POST',
+        body: new URLSearchParams({
+            nome:     document.getElementById('editNome').value.trim(),
+            email:    document.getElementById('editEmail').value.trim(),
+            telefone: document.getElementById('editTelefone').value.trim(),
+            endereco: document.getElementById('editEndereco').value.trim(),
+            senha:    senha
+        })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(dados) {
+        mensagemConta.textContent = dados.mensagem;
+        mensagemConta.style.color = dados.erro ? '#e57373' : '#2d6a4f';
+        if (!dados.erro) {
+            document.getElementById('editSenha').value        = '';
+            document.getElementById('editSenhaConfirm').value = '';
+            cardEdicao.style.display       = 'none';
+            cardVisualizacao.style.display = 'block';
+            carregarConta();
+        }
+    })
+    .catch(function() {
+        mensagemConta.textContent = 'Erro ao salvar dados.';
+        mensagemConta.style.color = '#e57373';
+    });
+}
+
+// ── Utilitário: escapa HTML ────────────────────────────────────────
+function esc(str) {
+    return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// ── Inicializar ───────────────────────────────────────────────────
 listarAlimentos();
 carregarTipos();
