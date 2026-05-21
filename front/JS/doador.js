@@ -84,8 +84,8 @@ function criarCardAlimento(alimento) {
             '<span class="tag tag-qtd">' + alimento.quantidade + ' un.</span>' +
         '</div>' +
         '<div class="card-botoes">' +
-            '<button class="btn-alterar" title="Alterar">✏️</button>' +
-            '<button class="btn-remover" title="Excluir">🗑️</button>' +
+            '<button class="btn-alterar">Alterar</button>' +
+            '<button class="btn-remover">Excluir</button>' +
         '</div>';
 
     card.querySelector('.btn-alterar').addEventListener('click', function() {
