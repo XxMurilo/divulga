@@ -8,10 +8,10 @@ $tabelaP = $_GET['table'] ?? '';
 try {
 
     if ($tabelaP == 'food') {
-        $tabela = 'Alimento';
+        $tabela = 'VerAlimentos()';
 
     } elseif ($tabelaP == 'user') {
-        $tabela = 'Usuario';
+        $tabela = 'VerUsuarios()';
 
     } elseif ($tabelaP == 'complaint') {
         $tabela = 'Denuncia';
@@ -21,7 +21,7 @@ try {
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT * FROM $tabela");
+    $stmt = $pdo->prepare("call $tabela");
     $stmt->execute();
 
     $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);

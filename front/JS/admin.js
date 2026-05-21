@@ -22,7 +22,7 @@ async function carregarTabela(param) {
 
     // 3. Constrói e injeta a tabela dinamicamente
     document.getElementById('TableView').innerHTML = `
-        <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+        <table border="1" id="admView" style="border-collapse: collapse; width: 100%; text-align: left;">
             <thead>
                 <tr>
                     <!-- Cria os cabeçalhos (TH) dinamicamente -->

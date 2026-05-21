@@ -84,3 +84,22 @@ nav ul li a:hover {
 .selecionado {
     background-color: var(--verde-escuro);
 }
+
+#admView {
+    margin-left: 3vh;
+    max-width: 96%;
+}
+
+#admView thead{
+    background-color: var(--verde-medio);
+    color: var(--branco);
+    border-color: var(--verde-medio);
+}
+
+#admView thead tr td {
+    padding: 0 5px 0 5px;
+}
+
+#admView tbody tr td {
+    padding: 0 5px 0 5px;
+}
