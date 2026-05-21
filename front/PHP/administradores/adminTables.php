@@ -14,7 +14,7 @@ try {
         $tabela = 'VerUsuarios';
 
     } elseif ($tabelaP == 'complaint') {
-        $tabela = 'Denuncia';
+        $tabela = 'VerDenuncias';
 
     } else {
         echo json_encode(["erro" => "Tabela não encontrada"]);
