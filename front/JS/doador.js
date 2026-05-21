@@ -255,15 +255,21 @@ function criarCardReserva(reserva) {
                 ? '<button class="btn-confirmar-reserva" data-id="' + reserva.idreserva + '">✔ Confirmar</button>' +
                   '<button class="btn-cancelar-reserva"  data-id="' + reserva.idreserva + '">✖ Cancelar</button>'
                 : '') +
+            '<button class="btn-denunciar-reserva" data-id="' + reserva.idreserva + '">⚑ Denunciar</button>' +
         '</div>';
 
     const btnConfirmar = card.querySelector('.btn-confirmar-reserva');
     const btnCancelar  = card.querySelector('.btn-cancelar-reserva');
+    const btnDenunciar = card.querySelector('.btn-denunciar-reserva');
+
     if (btnConfirmar) btnConfirmar.addEventListener('click', function() {
         atualizarStatusReserva(reserva.idreserva, 1); // 1 = Disponível (entregue)
     });
     if (btnCancelar) btnCancelar.addEventListener('click', function() {
         atualizarStatusReserva(reserva.idreserva, 3); // 3 = Cancelado
+    });
+    if (btnDenunciar) btnDenunciar.addEventListener('click', function() {
+        abrirModalDenuncia(reserva);
     });
 
     listaReservasCards.appendChild(card);
@@ -281,6 +287,96 @@ function atualizarStatusReserva(idreserva, idstatus) {
         if (!dados.erro) carregarReservas();
     })
     .catch(function() { mensagemReservas.textContent = 'Erro ao atualizar reserva.'; });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: DENÚNCIA (modal global)
+// ══════════════════════════════════════════════════════════════════
+const overlayDenuncia    = document.getElementById('overlayDenuncia');
+const denunciaIdUsuario  = document.getElementById('denunciaIdUsuario');
+const denunciaReservaInfo = document.getElementById('denunciaReservaInfo');
+const denunciaIdReserva  = document.getElementById('denunciaIdReserva');
+const denunciaMotivo     = document.getElementById('denunciaMotivo');
+const denunciaContador   = document.getElementById('denunciaContador');
+const mensagemDenuncia   = document.getElementById('mensagemDenuncia');
+
+// Contador de caracteres do motivo
+denunciaMotivo.addEventListener('input', function() {
+    denunciaContador.textContent = this.value.length;
+});
+
+document.getElementById('btnCancelarDenuncia').addEventListener('click', fecharModalDenuncia);
+overlayDenuncia.addEventListener('click', function(e) {
+    if (e.target === overlayDenuncia) fecharModalDenuncia();
+});
+
+document.getElementById('btnEnviarDenuncia').addEventListener('click', enviarDenuncia);
+
+// Busca o IDUSUARIO da sessão para exibir no modal (via minhaConta.php)
+var _idUsuarioSessao = '';
+fetch('PHP/doadores/minhaConta.php')
+    .then(function(r) { return r.json(); })
+    .then(function(dados) {
+        if (dados && !dados.erro && dados.usuario) {
+            _idUsuarioSessao = dados.usuario.idusuario || '';
+        }
+    });
+
+function abrirModalDenuncia(reserva) {
+    denunciaIdUsuario.value   = _idUsuarioSessao
+        ? 'ID ' + _idUsuarioSessao + ' — ' + (reserva.recebedor_nome || '')
+        : 'Carregando...';
+    denunciaReservaInfo.value = 'Reserva #' + reserva.idreserva + ' — ' + esc(reserva.alimento_nome) +
+                                ' (' + reserva.quantidade_reservada + ' un.) — ' + esc(reserva.status);
+    denunciaIdReserva.value   = reserva.idreserva;
+    denunciaMotivo.value      = '';
+    denunciaContador.textContent = '0';
+    mensagemDenuncia.textContent = '';
+    mensagemDenuncia.style.color = '';
+    overlayDenuncia.style.display = 'flex';
+    denunciaMotivo.focus();
+}
+
+function fecharModalDenuncia() {
+    overlayDenuncia.style.display = 'none';
+    denunciaMotivo.value = '';
+    denunciaContador.textContent = '0';
+    mensagemDenuncia.textContent = '';
+}
+
+function enviarDenuncia() {
+    const motivo    = denunciaMotivo.value.trim();
+    const idReserva = denunciaIdReserva.value;
+
+    if (motivo.length < 10) {
+        mensagemDenuncia.textContent = 'O motivo deve ter pelo menos 10 caracteres.';
+        mensagemDenuncia.style.color = '#b45309';
+        return;
+    }
+
+    mensagemDenuncia.textContent = 'Enviando denúncia...';
+    mensagemDenuncia.style.color = '';
+
+    fetch('PHP/doadores/criarDenuncia.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idreserva: parseInt(idReserva, 10), motivo: motivo })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(dados) {
+        if (dados.erro) {
+            mensagemDenuncia.textContent = dados.mensagem;
+            mensagemDenuncia.style.color = '#b45309';
+        } else {
+            mensagemDenuncia.textContent = '✔ ' + dados.mensagem;
+            mensagemDenuncia.style.color = '#065f46';
+            setTimeout(fecharModalDenuncia, 1800);
+        }
+    })
+    .catch(function() {
+        mensagemDenuncia.textContent = 'Erro ao enviar denúncia.';
+        mensagemDenuncia.style.color = '#b45309';
+    });
 }
 
 // ══════════════════════════════════════════════════════════════════

@@ -73,13 +73,9 @@ try {
     $permissao = strtolower($usuario['PERMISSAO']);
 
     if ($permissao === 'doador') {
-        header('Location: /divulga/front/doadorLogado.html');
     } elseif ($permissao === 'administrador') {
-        header('Location: /divulga/front/adminLogado.html');
     } elseif ($permissao === 'recebedor') {
-        header('Location: /divulga/front/recebedorLogado.html');
     } else {
-        header('Location: /divulga/front/telaInicial.html');
     }
 } catch (PDOException $e) {
     http_response_code(500);

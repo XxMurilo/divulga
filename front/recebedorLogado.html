@@ -18,7 +18,6 @@
                 <li><a href="#" class="nav-link" data-secao="reservas">Minhas Reservas</a></li>
             </ul>
         </nav>
-        <button class="btn-denuncia" id="btnDenuncia">⚑ Denúncia</button>
     </header>
 
     <!-- SEÇÃO: ALIMENTOS DISPONÍVEIS -->
@@ -28,6 +27,7 @@
         <p id="mensagemAlimentos" class="msg-status"></p>
         <div id="listaAlimentos">
             <div class="lista-vazia" id="msgVaziaAlimentos" style="display:none">
+                <span>🌱</span>
                 Nenhum alimento disponível no momento.
             </div>
             <div class="lista" id="listaAlimentosCards"></div>
@@ -41,6 +41,7 @@
         <p id="mensagemReservas" class="msg-status"></p>
         <div id="listaReservas">
             <div class="lista-vazia" id="msgVaziaReservas" style="display:none">
+                <span>📦</span>
                 Você ainda não fez nenhuma reserva.
             </div>
             <div class="lista" id="listaReservasCards"></div>
@@ -69,10 +70,12 @@
         </div>
     </div>
 
-        <!-- MODAL: DENÚNCIA -->
+    <!-- MODAL: DENÚNCIA -->
     <div class="overlay" id="overlayDenuncia">
         <div class="modal">
             <h2>Registrar Denúncia</h2>
+            <p id="denunciaDoadorNome" class="denuncia-doador-info"></p>
+            <input type="hidden" id="denunciaIdDoador">
             <div class="campo">
                 <label>Motivo da denúncia</label>
                 <textarea id="denunciaMotivo" placeholder="Descreva detalhadamente o motivo da denúncia..." maxlength="1000"></textarea>
