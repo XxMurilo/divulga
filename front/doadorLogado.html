@@ -138,6 +138,33 @@
         </div>
     </div>
 
+    <!-- MODAL DENÚNCIA -->
+    <div class="overlay" id="overlayDenuncia">
+        <div class="modal modal-denuncia">
+            <h2>Registrar Denúncia</h2>
+            <p class="modal-texto">Preencha os dados abaixo. Sua denúncia será analisada pela administração.</p>
+            <div class="campo">
+                <label>ID do Usuário (denunciante)</label>
+                <input type="text" id="denunciaIdUsuario" disabled>
+            </div>
+            <div class="campo">
+                <label>Reserva</label>
+                <input type="text" id="denunciaReservaInfo" disabled>
+                <input type="hidden" id="denunciaIdReserva">
+            </div>
+            <div class="campo">
+                <label>Motivo da Denúncia <span class="campo-opcional">(mín. 10 caracteres)</span></label>
+                <textarea id="denunciaMotivo" placeholder="Descreva o motivo da denúncia..." maxlength="1000" rows="5"></textarea>
+                <span class="contador-chars"><span id="denunciaContador">0</span>/1000</span>
+            </div>
+            <p id="mensagemDenuncia" class="msg-status"></p>
+            <div class="acoes-modal">
+                <button type="button" class="btn-cancelar" id="btnCancelarDenuncia">Cancelar</button>
+                <button type="button" class="btn-denunciar" id="btnEnviarDenuncia">📢 Enviar Denúncia</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL CONFIRMAR SAÍDA -->
     <div class="overlay" id="overlayLogout">
         <div class="modal modal-pequeno">
