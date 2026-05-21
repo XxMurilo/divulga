@@ -1,8 +1,5 @@
-delimiter @@
 
-CREATE PROCEDURE VerUsuarios()
-BEGIN
-
+CREATE VIEW VerUsuarios AS
     SELECT 
     Usuario.NOME,
     Usuario.EMAIL,
@@ -15,12 +12,8 @@ BEGIN
     INNER JOIN Condicao ON Condicao.IDCONDICAO = Usuario.IDCONDICAO
     ORDER BY Usuario.NOME;
 
-END @@
 
-DROP PROCEDURE IF EXISTS VerAlimentos @@
-CREATE PROCEDURE VerAlimentos()
-BEGIN
-
+CREATE VIEW VerAlimentos AS
     SELECT
     Usuario.NOME AS DOADOR,
     Alimento_doador.QUANTIDADE,
@@ -32,14 +25,7 @@ BEGIN
     INNER JOIN Alimento ON Alimento.IDALIMENTO = Alimento_doador.IDALIMENTO
     ORDER BY Alimento_doador.VALIDADE;
 
-END @@
 
-CREATE PROCEDURE VerDenuncias()
-BEGIN 
-
+CREATE VIEW VerDenuncias AS
     SELECT
     
-
-END @@
-
-delimiter ;

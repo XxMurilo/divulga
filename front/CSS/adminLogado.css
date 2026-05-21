@@ -103,3 +103,24 @@ nav ul li a:hover {
 #admView tbody tr td {
     padding: 0 5px 0 5px;
 }
+
+.procura {
+    margin-top: 4vh;
+    border-radius: 10px;
+    margin-left: 3vh;
+    max-width: 96%;
+    background-color: var(--verde-suave);
+    padding: 5px 8px 5px 8px;
+
+}
+
+.procura form {
+   width: 100%; 
+}
+
+.procura form input {
+    border: none;
+    outline: none;
+    background-color: inherit;
+    width: 100%;
+}
