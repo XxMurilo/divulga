@@ -1,7 +1,7 @@
 <?php
 // criarDenuncia.php
 // POST body JSON: { motivo: string, idUsuarioCulpado: int }
-// Registra uma denúncia associada ao usuário logado (reclamante) contra o doador (culpado).
+// IDRECLAMADOR = usuário logado | IDDENUNCIADO = doador da reserva
 
 session_start();
 header('Content-Type: application/json; charset=utf-8');
@@ -17,7 +17,7 @@ $body = json_decode(file_get_contents('php://input'), true);
 
 $motivo           = isset($body['motivo'])           ? trim($body['motivo'])           : '';
 $idUsuarioCulpado = isset($body['idUsuarioCulpado']) ? (int) $body['idUsuarioCulpado'] : 0;
-$idReclamante     = (int) $_SESSION['idusuario'];
+$idReclamador     = (int) $_SESSION['idusuario'];
 
 if (strlen($motivo) < 10) {
     echo json_encode(['erro' => 'O motivo deve ter pelo menos 10 caracteres.'], JSON_UNESCAPED_UNICODE);
@@ -30,36 +30,35 @@ if ($idUsuarioCulpado <= 0) {
 }
 
 try {
-    // Verifica se o reclamante existe
     $stmtR = $pdo->prepare("SELECT NOME FROM Usuario WHERE IDUSUARIO = :id");
-    $stmtR->execute([':id' => $idReclamante]);
-    $reclamante = $stmtR->fetch(PDO::FETCH_ASSOC);
+    $stmtR->execute([':id' => $idReclamador]);
+    $reclamador = $stmtR->fetch(PDO::FETCH_ASSOC);
 
     // Verifica se o culpado existe
-    $stmtC = $pdo->prepare("SELECT NOME FROM Usuario WHERE IDUSUARIO = :id");
-    $stmtC->execute([':id' => $idUsuarioCulpado]);
-    $culpado = $stmtC->fetch(PDO::FETCH_ASSOC);
+    $stmtD = $pdo->prepare("SELECT NOME FROM Usuario WHERE IDUSUARIO = :id");
+    $stmtD->execute([':id' => $idUsuarioCulpado]);
+    $denunciado = $stmtD->fetch(PDO::FETCH_ASSOC);
 
-    if (!$reclamante || !$culpado) {
+    if (!$reclamador || !$denunciado) {
         echo json_encode(['erro' => 'Usuário não encontrado.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDUSUARIO_RECLAMANTE, IDUSUARIO_CULPADO)
-        VALUES (NOW(), :motivo, :reclamante, :culpado)
+        INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDRECLAMADOR, IDDENUNCIADO)
+        VALUES (NOW(), :motivo, :reclamador, :denunciado)
     ");
     $stmt->execute([
         ':motivo'     => $motivo,
-        ':reclamante' => $idReclamante,
-        ':culpado'    => $idUsuarioCulpado,
+        ':reclamador' => $idReclamador,
+        ':denunciado' => $idUsuarioCulpado,
     ]);
 
     echo json_encode([
         'sucesso'    => true,
         'idDenuncia' => $pdo->lastInsertId(),
-        'reclamante' => $reclamante['NOME'],
-        'acusado'    => $culpado['NOME']
+        'reclamador' => $reclamador['NOME'],
+        'denunciado' => $denunciado['NOME']
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {

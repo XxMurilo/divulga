@@ -6,7 +6,7 @@ Alimento(IDALIMENTO, NOME, IDTIPO)
 Cidade(IDCIDADE, NOME, IDESTADO)
 Permissão(IDPERMISSAO, NOME)
 Usuário(IDUSUARIO, NOME, EMAIL, TELEFONE, ENDERECO, IDENTIFICACAO, SENHA, IDPERMISSAO, IDCONDICAO, IDCIDADE)
-Denuncia(IDDENUNCIA, DIA_HORA, MOTIVO, IDUSUARIO, IDUSUARIO_DOADOR)
+Denuncia(IDDENUNCIA, DIA_HORA, MOTIVO, IDRECLAMADOR, IDDENUNCIADO)
 Alimento_doador(IDALIMENTO_DOADOR, VALIDADE, QUANTIDADE, DESCRICAO, IDUSUARIO, IDALIMENTO)
 Reserva(IDRESERVA, QUANTIDADE_RESERVADA, IDSTATUS, IDUSUARIO, IDALIMENTO_DOADOR)*/
 
@@ -92,15 +92,15 @@ CREATE TABLE Denuncia (
     IDDENUNCIA INT AUTO_INCREMENT PRIMARY KEY,
     DIA_HORA DATETIME NOT NULL,
     MOTIVO VARCHAR(1000) NOT NULL,
-    IDUSUARIO INT,
-    IDUSUARIO_DOADOR INT,
+    IDRECLAMADOR INT,
+    IDDENUNCIADO INT,
 
-    CONSTRAINT FK_DENUNCIA_USUARIO
-        FOREIGN KEY (IDUSUARIO)
+    CONSTRAINT FK_DENUNCIA_RECLAMADOR
+        FOREIGN KEY (IDRECLAMADOR)
         REFERENCES Usuario(IDUSUARIO),
 
-    CONSTRAINT FK_DENUNCIA_DOADOR
-        FOREIGN KEY (IDUSUARIO_DOADOR)
+    CONSTRAINT FK_DENUNCIA_DENUNCIADO
+        FOREIGN KEY (IDDENUNCIADO)
         REFERENCES Usuario(IDUSUARIO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -141,68 +141,30 @@ CREATE TABLE Reserva (
         REFERENCES Alimento_doador(IDALIMENTO_DOADOR)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO Permissao (NOME)
-VALUES
-('Doador'),
-('Recebedor'),
-('Administrador');
+INSERT INTO Permissao (NOME) VALUES ('Doador'), ('Recebedor'), ('Administrador');
 
-INSERT INTO Condicao (NOME)
-VALUES
-('Ativo'),
-('Inativo'),
-('Pendente');
+INSERT INTO Condicao (NOME) VALUES ('Ativo'), ('Inativo'), ('Pendente');
 
-INSERT INTO Estado (NOME, SIGLA)
-VALUES
-('São Paulo', 'SP'),
-('Minas Gerais', 'MG'),
-('Bahia', 'BA');
+INSERT INTO Estado (NOME, SIGLA) VALUES ('São Paulo', 'SP'), ('Minas Gerais', 'MG'), ('Bahia', 'BA');
 
-INSERT INTO Cidade (NOME, IDESTADO)
-VALUES
-('Ribeirão Preto', 1),
-('Uberlândia', 2),
-('Salvador', 3);
+INSERT INTO Cidade (NOME, IDESTADO) VALUES ('Ribeirão Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
 
-INSERT INTO Status (NOME)
-VALUES
-('Disponível'),
-('Reservado'),
-('Cancelado');
+INSERT INTO Status (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado');
 
-INSERT INTO Tipo (NOME)
-VALUES
-('Verduras'),
-('Legumes'),
-('Frutas'),
-('Grãos'),
-('Carnes'),
-('Peixes'),
-('Ovos'),
-('Laticínios'),
-('Massas'),
-('Pães'),
-('Bebidas'),
-('Doces'),
-('Temperos'),
-('Congelados'),
-('Embutidos'),
-('Enlatados');
+INSERT INTO Tipo (NOME) VALUES
+('Verduras'), ('Legumes'), ('Frutas'), ('Grãos'), ('Carnes'), ('Peixes'),
+('Ovos'), ('Laticínios'), ('Massas'), ('Pães'), ('Bebidas'), ('Doces'),
+('Temperos'), ('Congelados'), ('Embutidos'), ('Enlatados');
 
-INSERT INTO Alimento (NOME, IDTIPO)
-VALUES
-('Arroz Integral', 4),
-('Alface', 1),
-('Suco de Laranja', 11);
-/*========================================================================================--*/
+INSERT INTO Alimento (NOME, IDTIPO) VALUES
+('Arroz Integral', 4), ('Alface', 1), ('Suco de Laranja', 11);
 
 INSERT INTO Usuario (NOME, EMAIL, TELEFONE, ENDERECO, IDENTIFICACAO, SENHA, IDPERMISSAO, IDCONDICAO, IDCIDADE) VALUES
 ('Carlos Henrique', 'carlos@gmail.com', '(16)99999-1111', 'Rua das Flores, 120 - Centro', '12345678900', '123456', 1, 1, 1),
 ('Mariana Souza', 'mariana@gmail.com', '(16)98888-2222', 'Av. Brasil, 450 - Jardim América', '98765432100', '654321', 2, 1, 2),
 ('João Pedro', 'joao@gmail.com', '(16)97777-3333', 'Rua XV de Novembro, 300 - Vila Nova', '45678912300', 'admin123', 3, 1, 1);
 
-INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDUSUARIO, IDUSUARIO_DOADOR) VALUES
+INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDRECLAMADOR, IDDENUNCIADO) VALUES
 ('2026-05-18 10:30:00', 'Descarte inadequado de alimentos', 2, 1),
 ('2026-05-17 14:20:00', 'Registro de contato suspeito', 1, NULL),
 ('2026-05-16 09:10:00', 'Reclamação sobre entrega atrasada', 3, NULL);
@@ -213,8 +175,4 @@ INSERT INTO Alimento_doador (VALIDADE, QUANTIDADE, DESCRICAO, IDUSUARIO, IDALIME
 ('2026-06-05', 15, 'Suco de laranja natural', 3, 3);
 
 INSERT INTO Reserva (QUANTIDADE_RESERVADA, IDSTATUS, IDUSUARIO, IDALIMENTO_DOADOR) VALUES
-(3, 2, 2, 1),
-(5, 1, 2, 2),
-(2, 3, 2, 3);
-
-/* Ta atualizado agora */
+(3, 2, 2, 1), (5, 1, 2, 2), (2, 3, 2, 3);
