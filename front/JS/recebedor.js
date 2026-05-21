@@ -24,9 +24,9 @@ navLinks.forEach(function(link) {
 //  SEÇÃO: ALIMENTOS DISPONÍVEIS
 // ══════════════════════════════════════════════════════════════════
 
-var mensagemAlimentos    = document.getElementById('mensagemAlimentos');
-var listaAlimentosCards  = document.getElementById('listaAlimentosCards');
-var msgVaziaAlimentos    = document.getElementById('msgVaziaAlimentos');
+var mensagemAlimentos   = document.getElementById('mensagemAlimentos');
+var listaAlimentosCards = document.getElementById('listaAlimentosCards');
+var msgVaziaAlimentos   = document.getElementById('msgVaziaAlimentos');
 
 function carregarAlimentos() {
     listaAlimentosCards.innerHTML = '';
@@ -69,15 +69,10 @@ function criarCardAlimento(alimento) {
             '<span class="tag">Val: ' + validade + '</span>' +
             '<span class="tag">' + alimento.quantidade + ' un.</span>' +
         '</div>' +
-        '<button class="btn-reservar">Reservar</button>' +
-        '<button class="btn-denuncia">Denunciar</button>';
+        '<button class="btn-reservar">Reservar</button>';
 
     card.querySelector('.btn-reservar').addEventListener('click', function() {
         abrirModalReserva(alimento);
-    });
-
-    card.querySelector('.btn-denuncia').addEventListener('click', function() {
-        abrirModalDenuncia(alimento);
     });
 
     listaAlimentosCards.appendChild(card);
@@ -87,11 +82,11 @@ function criarCardAlimento(alimento) {
 //  MODAL: RESERVAR ALIMENTO
 // ══════════════════════════════════════════════════════════════════
 
-var overlayReserva     = document.getElementById('overlayReserva');
-var infoAlimento       = document.getElementById('infoAlimento');
-var qtdDisponivel      = document.getElementById('qtdDisponivel');
-var qtdReserva         = document.getElementById('qtdReserva');
-var idAlimentoReserva  = document.getElementById('idAlimentoReserva');
+var overlayReserva    = document.getElementById('overlayReserva');
+var infoAlimento      = document.getElementById('infoAlimento');
+var qtdDisponivel     = document.getElementById('qtdDisponivel');
+var qtdReserva        = document.getElementById('qtdReserva');
+var idAlimentoReserva = document.getElementById('idAlimentoReserva');
 
 document.getElementById('btnCancelarReserva').addEventListener('click', fecharModalReserva);
 document.getElementById('btnConfirmarReserva').addEventListener('click', confirmarReserva);
@@ -192,11 +187,18 @@ function criarCardReserva(reserva) {
             '<p>Doador: <strong>' + esc(reserva.nomeDoador) + '</strong></p>' +
             '<p>Validade: ' + validade + ' · Quantidade reservada: ' + reserva.quantidadeReservada + ' un.</p>' +
         '</div>' +
-        '<button class="btn-cancelar-reserva">Cancelar</button>';
+        '<div class="card-acoes">' +
+            '<button class="btn-cancelar-reserva">Cancelar</button>' +
+            '<button class="btn-denuncia-reserva">⚑ Denunciar Doador</button>' +
+        '</div>';
 
     card.querySelector('.btn-cancelar-reserva').addEventListener('click', function() {
         if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
         cancelarReserva(reserva.idReserva, card);
+    });
+
+    card.querySelector('.btn-denuncia-reserva').addEventListener('click', function() {
+        abrirModalDenuncia(reserva.idDoador, reserva.nomeDoador);
     });
 
     listaReservasCards.appendChild(card);
@@ -225,11 +227,6 @@ function cancelarReserva(idReserva, card) {
 
 var overlayDenuncia = document.getElementById('overlayDenuncia');
 
-document.getElementById('btnDenuncia').addEventListener('click', function() {
-    document.getElementById('denunciaMotivo').value = '';
-    overlayDenuncia.classList.add('ativo');
-});
-
 document.getElementById('btnCancelarDenuncia').addEventListener('click', function() {
     overlayDenuncia.classList.remove('ativo');
 });
@@ -238,15 +235,43 @@ overlayDenuncia.addEventListener('click', function(e) {
     if (e.target === overlayDenuncia) overlayDenuncia.classList.remove('ativo');
 });
 
-document.getElementById('btnEnviarDenuncia').addEventListener('click', function() {
-    var motivo = document.getElementById('denunciaMotivo').value.trim();
+function abrirModalDenuncia(idDoador, nomeDoador) {
+    document.getElementById('denunciaMotivo').value = '';
+    document.getElementById('denunciaIdDoador').value = idDoador || '';
 
-    if (motivo.length < 10) { alert('O motivo deve ter pelo menos 10 caracteres.'); return; }
+    var infoEl = document.getElementById('denunciaDoadorNome');
+    if (nomeDoador) {
+        infoEl.textContent = 'Denunciando o doador: ' + nomeDoador;
+        infoEl.style.display = 'block';
+    } else {
+        infoEl.textContent = '';
+        infoEl.style.display = 'none';
+    }
+
+    overlayDenuncia.classList.add('ativo');
+}
+
+document.getElementById('btnEnviarDenuncia').addEventListener('click', function() {
+    var motivo   = document.getElementById('denunciaMotivo').value.trim();
+    var idDoador = document.getElementById('denunciaIdDoador').value;
+
+    if (motivo.length < 10) {
+        alert('O motivo deve ter pelo menos 10 caracteres.');
+        return;
+    }
+
+    if (!idDoador || parseInt(idDoador) <= 0) {
+        alert('Doador não identificado. Abra a denúncia pelo card da reserva.');
+        return;
+    }
 
     fetch('PHP/recebedor/criarDenuncia.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ motivo: motivo })
+        body: JSON.stringify({
+            motivo:           motivo,
+            idUsuarioCulpado: parseInt(idDoador)
+        })
     })
         .then(function(r) { return r.json(); })
         .then(function(dados) {

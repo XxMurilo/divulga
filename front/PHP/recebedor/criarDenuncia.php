@@ -1,8 +1,7 @@
 <?php
 // criarDenuncia.php
-// POST body JSON: { nome: string, motivo: string }
-// Registra uma denúncia associada ao usuário logado.
-// O campo "nome" é apenas informativo (vindo do formulário), o IDUSUARIO vem da sessão.
+// POST body JSON: { motivo: string, idUsuarioCulpado: int }
+// Registra uma denúncia associada ao usuário logado (reclamante) contra o doador (culpado).
 
 session_start();
 header('Content-Type: application/json; charset=utf-8');
@@ -10,39 +9,57 @@ require_once '../conexaoBD.php';
 
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
-    echo json_encode(['erro' => 'Não autorizado.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['erro' => 'Usuário não autenticado.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$body      = json_decode(file_get_contents('php://input'), true);
-$nome      = isset($body['nome'])   ? trim($body['nome'])   : '';
-$motivo    = isset($body['motivo']) ? trim($body['motivo']) : '';
-$idUsuario = (int) $_SESSION['idusuario'];
+$body = json_decode(file_get_contents('php://input'), true);
 
-// Validações
+$motivo           = isset($body['motivo'])           ? trim($body['motivo'])           : '';
+$idUsuarioCulpado = isset($body['idUsuarioCulpado']) ? (int) $body['idUsuarioCulpado'] : 0;
+$idReclamante     = (int) $_SESSION['idusuario'];
+
 if (strlen($motivo) < 10) {
     echo json_encode(['erro' => 'O motivo deve ter pelo menos 10 caracteres.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-if (strlen($motivo) < 10) {
-    echo json_encode(['erro' => 'O motivo deve ter pelo menos 10 caracteres.'], JSON_UNESCAPED_UNICODE);
+if ($idUsuarioCulpado <= 0) {
+    echo json_encode(['erro' => 'Doador não identificado.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 try {
+    // Verifica se o reclamante existe
+    $stmtR = $pdo->prepare("SELECT NOME FROM Usuario WHERE IDUSUARIO = :id");
+    $stmtR->execute([':id' => $idReclamante]);
+    $reclamante = $stmtR->fetch(PDO::FETCH_ASSOC);
+
+    // Verifica se o culpado existe
+    $stmtC = $pdo->prepare("SELECT NOME FROM Usuario WHERE IDUSUARIO = :id");
+    $stmtC->execute([':id' => $idUsuarioCulpado]);
+    $culpado = $stmtC->fetch(PDO::FETCH_ASSOC);
+
+    if (!$reclamante || !$culpado) {
+        echo json_encode(['erro' => 'Usuário não encontrado.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
     $stmt = $pdo->prepare("
-        INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDUSUARIO)
-        VALUES (NOW(), :motivo, :idusuario)
+        INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDUSUARIO_RECLAMANTE, IDUSUARIO_CULPADO)
+        VALUES (NOW(), :motivo, :reclamante, :culpado)
     ");
     $stmt->execute([
-        ':motivo'    => $motivo,
-        ':idusuario' => $idUsuario,
+        ':motivo'     => $motivo,
+        ':reclamante' => $idReclamante,
+        ':culpado'    => $idUsuarioCulpado,
     ]);
 
     echo json_encode([
         'sucesso'    => true,
-        'idDenuncia' => $pdo->lastInsertId()
+        'idDenuncia' => $pdo->lastInsertId(),
+        'reclamante' => $reclamante['NOME'],
+        'acusado'    => $culpado['NOME']
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {

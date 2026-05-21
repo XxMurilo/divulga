@@ -21,6 +21,7 @@ try {
             r.QUANTIDADE_RESERVADA   AS quantidadeReservada,
             a.NOME                   AS nomeAlimento,
             ad.VALIDADE              AS validade,
+            u.IDUSUARIO              AS idDoador,
             u.NOME                   AS nomeDoador,
             u.ENDERECO               AS enderecoDoador,
             s.NOME                   AS statusReserva

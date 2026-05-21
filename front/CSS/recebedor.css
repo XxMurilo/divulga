@@ -213,9 +213,8 @@ nav ul li a.ativo {
     border-radius: 12px;
     padding: 18px 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    gap: 12px;
     transition: box-shadow .2s;
 }
 
@@ -372,4 +371,41 @@ nav ul li a.ativo {
 
 .btn-cancelar:hover {
     border-color: #aaa;
+}
+/* ── AÇÕES DO CARD DE RESERVA ── */
+.card-acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-denuncia-reserva {
+    background: transparent;
+    color: #c0392b;
+    border: 1.5px solid #c0392b;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+
+.btn-denuncia-reserva:hover {
+    background: #c0392b;
+    color: #fff;
+}
+
+/* ── INFO DO DOADOR NO MODAL DE DENÚNCIA ── */
+.denuncia-doador-info {
+    background: #fff8e1;
+    border-left: 4px solid #f0a500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: .9rem;
+    color: #7a5c00;
+    margin-bottom: 12px;
+    font-weight: 500;
 }
