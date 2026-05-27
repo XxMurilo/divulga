@@ -1,6 +1,7 @@
-async function carregarTabela(param) {
+async function carregarTabela(param, texto = '') {
+
     const resposta = await fetch(
-        `PHP/administradores/adminTables.php?table=${encodeURIComponent(param)}`
+        `PHP/administradores/adminTables.php?table=${encodeURIComponent(param)}&texto=${encodeURIComponent(texto)}`
     );
 
     const dados = await resposta.json();
@@ -43,13 +44,43 @@ async function carregarTabela(param) {
 
 const abas = document.querySelectorAll(".aba");
 
-  abas.forEach(aba => {
-    aba.addEventListener("click", () => {
+abas.forEach(aba => {
 
-      // remove a seleção dos outros
-      abas.forEach(a => a.classList.remove("selecionado"));
+    aba.addEventListener("click", async () => {
 
-      // adiciona no botão clicado
-      aba.classList.add("selecionado");
+        abas.forEach(a => a.classList.remove("selecionado"));
+
+        aba.classList.add("selecionado");
+
+        const tabela = aba.dataset.table;
+
+        await carregarTabela(tabela);
     });
-  });
+
+});
+
+const barra = document.getElementById('search');
+
+barra.addEventListener('input', () => {
+    search();
+});
+
+async function search() {
+
+    const texto = barra.value;
+
+    const abaSelecionada = document.querySelector('.aba.selecionado');
+
+    if (!abaSelecionada) {
+        return;
+    }
+
+    const tabela = abaSelecionada.dataset.table;
+
+    if (texto.trim() === "") {
+        await carregarTabela(tabela);
+        return;
+    }
+
+    await carregarTabela(tabela, texto);
+}

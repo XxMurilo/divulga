@@ -114,11 +114,7 @@ nav ul li a:hover {
 
 }
 
-.procura form {
-   width: 100%; 
-}
-
-.procura form input {
+#search {
     border: none;
     outline: none;
     background-color: inherit;
