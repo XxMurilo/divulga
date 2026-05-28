@@ -409,3 +409,9 @@ nav ul li a.ativo {
     margin-bottom: 12px;
     font-weight: 500;
 }
+
+/* ── Tags de status nas reservas ── */
+.status-reservado  { background: #dbeafe; color: #1d4ed8; }
+.status-cancelado  { background: #fee2e2; color: #dc2626; }
+.status-entregue   { background: #dcfce7; color: #16a34a; }
+.status-disponivel { background: #d1fae5; color: #065f46; }

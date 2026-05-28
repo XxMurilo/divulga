@@ -41,7 +41,7 @@ try {
     $stmt = $pdo->prepare("UPDATE Reserva SET IDSTATUS = :idstatus WHERE IDRESERVA = :idreserva");
     $stmt->execute([':idstatus' => $idstatus, ':idreserva' => $idreserva]);
 
-    $nomes = [1 => 'Disponível', 2 => 'Reservado', 3 => 'Cancelado'];
+    $nomes = [1 => 'Disponível', 2 => 'Reservado', 3 => 'Cancelado', 4 => 'Entregue'];
     $nomeStatus = $nomes[$idstatus] ?? 'Atualizado';
 
     echo json_encode(

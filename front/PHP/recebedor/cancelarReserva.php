@@ -1,8 +1,5 @@
 <?php
 // cancelarReserva.php
-// POST body JSON: { idReserva: int }
-// Cancela a reserva (IDSTATUS = 2 = Cancelado) e devolve a quantidade ao alimento original
-
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once '../conexaoBD.php';
@@ -26,13 +23,13 @@ if ($idReserva <= 0) {
 try {
     $pdo->beginTransaction();
 
-    // 1. Busca a reserva garantindo que pertence ao usuário e ainda está ativa (IDSTATUS = 1)
+    // 1. Busca a reserva garantindo que pertence ao usuário e ainda está com IDSTATUS = 2 (Reservado)
     $stmt = $pdo->prepare("
         SELECT IDRESERVA, QUANTIDADE_RESERVADA, IDALIMENTO_DOADOR
         FROM   Reserva
         WHERE  IDRESERVA = :idReserva
           AND  IDUSUARIO = :idusuario
-          AND  IDSTATUS  = 1
+          AND  IDSTATUS  = 2
         FOR UPDATE
     ");
     $stmt->execute([':idReserva' => $idReserva, ':idusuario' => $idUsuario]);
@@ -40,16 +37,12 @@ try {
 
     if (!$reserva) {
         $pdo->rollBack();
-        echo json_encode(['erro' => 'Reserva não encontrada ou já cancelada.'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['erro' => 'Reserva não encontrada ou não pode ser cancelada.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
-    // 2. Atualiza status da reserva para 2 = Cancelado
-    $stmtUpd = $pdo->prepare("
-        UPDATE Reserva
-        SET    IDSTATUS = 2
-        WHERE  IDRESERVA = :idReserva
-    ");
+    // 2. Atualiza status para 3 = Cancelado
+    $stmtUpd = $pdo->prepare("UPDATE Reserva SET IDSTATUS = 3 WHERE IDRESERVA = :idReserva");
     $stmtUpd->execute([':idReserva' => $idReserva]);
 
     // 3. Devolve a quantidade ao alimento original

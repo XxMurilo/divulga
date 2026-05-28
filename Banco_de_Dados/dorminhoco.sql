@@ -149,7 +149,7 @@ INSERT INTO Estado (NOME, SIGLA) VALUES ('São Paulo', 'SP'), ('Minas Gerais', '
 
 INSERT INTO Cidade (NOME, IDESTADO) VALUES ('Ribeirão Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
 
-INSERT INTO Status (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado');
+INSERT INTO Status (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado'), ('Entregue');
 
 INSERT INTO Tipo (NOME) VALUES
 ('Verduras'), ('Legumes'), ('Frutas'), ('Grãos'), ('Carnes'), ('Peixes'),

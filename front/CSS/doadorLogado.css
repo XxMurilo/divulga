@@ -461,11 +461,11 @@ nav ul li a.ativo {
     cursor: pointer;
     transition: opacity .2s;
     white-space: nowrap;
-    background: #fff3e0;
-    color: #b45309;
+    background: #fee2e2;
+    color: #dc2626;
 }
 
-.btn-denunciar-reserva:hover { background: #fed7aa; }
+.btn-denunciar-reserva:hover { background: #fecaca; }
 
 /* ── Modal Denúncia ── */
 .modal-denuncia { max-width: 480px; }

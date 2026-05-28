@@ -59,10 +59,10 @@ try {
     ");
     $stmtUpd->execute([':qtd' => $quantidade, ':id' => $idAlimentoDoador]);
 
-    // 3. Cria a reserva (IDSTATUS = 1 = Ativo / Pendente — ajuste conforme seu INSERT de Status)
+    // 3. Cria a reserva (IDSTATUS = 2 = Reservado)
     $stmtRes = $pdo->prepare("
         INSERT INTO Reserva (QUANTIDADE_RESERVADA, IDSTATUS, IDUSUARIO, IDALIMENTO_DOADOR)
-        VALUES (:qtd, 1, :idusuario, :idAlimentoDoador)
+        VALUES (:qtd, 2, :idusuario, :idAlimentoDoador)
     ");
     $stmtRes->execute([
         ':qtd'             => $quantidade,

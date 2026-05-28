@@ -181,21 +181,40 @@ function criarCardReserva(reserva) {
         ? new Date(reserva.validade + 'T00:00:00').toLocaleDateString('pt-BR')
         : '—';
 
+    var statusClasses = {
+        'Reservado':  'status-reservado',
+        'Cancelado':  'status-cancelado',
+        'Entregue':   'status-entregue',
+        'Disponível': 'status-disponivel'
+    };
+    var statusClasse = statusClasses[reserva.statusReserva] || '';
+
+    // Botão cancelar só aparece se status é Reservado (idStatus = 2)
+    var btnCancelarHtml = (reserva.idStatus == 2)
+        ? '<button class="btn-cancelar-reserva">✖ Cancelar</button>'
+        : '';
+
     card.innerHTML =
         '<div class="card-info">' +
             '<h3>' + esc(reserva.nomeAlimento) + '</h3>' +
             '<p>Doador: <strong>' + esc(reserva.nomeDoador) + '</strong></p>' +
-            '<p>Validade: ' + validade + ' · Quantidade reservada: ' + reserva.quantidadeReservada + ' un.</p>' +
+            '<p>Validade: ' + validade + ' · Quantidade: ' + reserva.quantidadeReservada + ' un.</p>' +
+        '</div>' +
+        '<div class="card-tags">' +
+            '<span class="tag ' + statusClasse + '">' + esc(reserva.statusReserva) + '</span>' +
         '</div>' +
         '<div class="card-acoes">' +
-            '<button class="btn-cancelar-reserva">Cancelar</button>' +
+            btnCancelarHtml +
             '<button class="btn-denuncia-reserva">⚑ Denunciar Doador</button>' +
         '</div>';
 
-    card.querySelector('.btn-cancelar-reserva').addEventListener('click', function() {
-        if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
-        cancelarReserva(reserva.idReserva, card);
-    });
+    var btnCancelar = card.querySelector('.btn-cancelar-reserva');
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', function() {
+            if (!confirm('Tem certeza que deseja cancelar esta reserva?')) return;
+            cancelarReserva(reserva.idReserva, card);
+        });
+    }
 
     card.querySelector('.btn-denuncia-reserva').addEventListener('click', function() {
         abrirModalDenuncia(reserva.idDoador, reserva.nomeDoador);

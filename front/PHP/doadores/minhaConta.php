@@ -27,6 +27,7 @@ try {
 
     echo json_encode(
         ['erro' => false, 'usuario' => [
+            'idusuario'     => $_SESSION['idusuario'],
             'nome'          => $usuario['NOME'],
             'email'         => $usuario['EMAIL'],
             'telefone'      => $usuario['TELEFONE'],

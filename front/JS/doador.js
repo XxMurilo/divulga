@@ -263,10 +263,10 @@ function criarCardReserva(reserva) {
     const btnDenunciar = card.querySelector('.btn-denunciar-reserva');
 
     if (btnConfirmar) btnConfirmar.addEventListener('click', function() {
-        atualizarStatusReserva(reserva.idreserva, 1); // 1 = Disponível (entregue)
+        atualizarStatusReserva(reserva.idreserva, 4, card); // 4 = Entregue
     });
     if (btnCancelar) btnCancelar.addEventListener('click', function() {
-        atualizarStatusReserva(reserva.idreserva, 3); // 3 = Cancelado
+        atualizarStatusReserva(reserva.idreserva, 3, card); // 3 = Cancelado
     });
     if (btnDenunciar) btnDenunciar.addEventListener('click', function() {
         abrirModalDenuncia(reserva);
@@ -275,7 +275,7 @@ function criarCardReserva(reserva) {
     listaReservasCards.appendChild(card);
 }
 
-function atualizarStatusReserva(idreserva, idstatus) {
+function atualizarStatusReserva(idreserva, idstatus, card) {
     mensagemReservas.textContent = 'Atualizando...';
     fetch('PHP/doadores/atualizarReserva.php', {
         method: 'POST',
@@ -284,7 +284,14 @@ function atualizarStatusReserva(idreserva, idstatus) {
     .then(function(r) { return r.json(); })
     .then(function(dados) {
         mensagemReservas.textContent = dados.mensagem;
-        if (!dados.erro) carregarReservas();
+        if (!dados.erro) {
+            // Remove o card da tela imediatamente após confirmar ou cancelar
+            if (card && card.parentNode) card.parentNode.removeChild(card);
+            // Se não restar nenhum card, mostra mensagem de lista vazia
+            if (listaReservasCards.children.length === 0) {
+                msgVaziaReservas.style.display = 'block';
+            }
+        }
     })
     .catch(function() { mensagemReservas.textContent = 'Erro ao atualizar reserva.'; });
 }
@@ -312,19 +319,19 @@ overlayDenuncia.addEventListener('click', function(e) {
 
 document.getElementById('btnEnviarDenuncia').addEventListener('click', enviarDenuncia);
 
-// Busca o IDUSUARIO da sessão para exibir no modal (via minhaConta.php)
-var _idUsuarioSessao = '';
+// Busca o nome do usuário da sessão para exibir no modal (via minhaConta.php)
+var _nomeUsuarioSessao = '';
 fetch('PHP/doadores/minhaConta.php')
     .then(function(r) { return r.json(); })
     .then(function(dados) {
         if (dados && !dados.erro && dados.usuario) {
-            _idUsuarioSessao = dados.usuario.idusuario || '';
+            _nomeUsuarioSessao = dados.usuario.nome || '';
         }
     });
 
 function abrirModalDenuncia(reserva) {
-    denunciaIdUsuario.value   = _idUsuarioSessao
-        ? 'ID ' + _idUsuarioSessao + ' — ' + (reserva.recebedor_nome || '')
+    denunciaIdUsuario.value   = _nomeUsuarioSessao
+        ? _nomeUsuarioSessao
         : 'Carregando...';
     denunciaReservaInfo.value = 'Reserva #' + reserva.idreserva + ' — ' + esc(reserva.alimento_nome) +
                                 ' (' + reserva.quantidade_reservada + ' un.) — ' + esc(reserva.status);
