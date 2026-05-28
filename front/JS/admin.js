@@ -20,6 +20,7 @@ async function carregarTabela(param, texto = '') {
 
     // 2. Extrai o nome das colunas dinamicamente a partir da primeira linha
     const colunas = Object.keys(dados[0]);
+    const isUserTable = param === "user";
 
     // 3. Constrói e injeta a tabela dinamicamente
     document.getElementById('TableView').innerHTML = `
@@ -28,6 +29,7 @@ async function carregarTabela(param, texto = '') {
                 <tr>
                     <!-- Cria os cabeçalhos (TH) dinamicamente -->
                     ${colunas.map(coluna => `<th>${coluna.toUpperCase()}</th>`).join('')}
+                    ${isUserTable ? `<th>AÇÕES</th>` : ''}
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +37,11 @@ async function carregarTabela(param, texto = '') {
                 ${dados.map(linha => `
                     <tr>
                         ${colunas.map(coluna => `<td>${linha[coluna]}</td>`).join('')}
+                        ${isUserTable ? `
+                            <td>
+                                <button onclick="abrirModalCondicao(${linha.id})">Editar</button>
+                            </td>
+                        ` : ''}
                     </tr>
                 `).join('')}
             </tbody>
@@ -83,4 +90,67 @@ async function search() {
     }
 
     await carregarTabela(tabela, texto);
+}
+
+function abrirModalCondicao(id) {
+    // 1. Define a estrutura HTML do modal em uma string (Template Literal)
+    const modalHTML = `
+        <div class="modal-overlay" id="modalCondicao">
+            <div class="modal-box">
+                <button class="modal-close" id="btnFecharModal">&times;</button>
+                <h2>Alterar Condição do Usuário</h2>
+                <select id="userConditions"><option value="">Selecione uma Condição</option></select>
+                <button id="btnAcaoModal">Salvar</button>
+            </div>
+        </div>
+    `;
+
+    // 2. Injeta o modal no final do body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // 3. Seleciona os elementos que acabaram de ser criados para dar a funcionalidade de fechar
+    const modalElemento = document.getElementById('modalCondicao');
+    const botaoFechar = document.getElementById('btnFecharModal');
+    const botaoAcao = document.getElementById('btnAcaoModal');
+
+    // Função interna para destruir o modal do HTML
+    function fecharModal() {
+        modalElemento.remove(); 
+    }
+
+    // Fecha ao clicar no 'X' ou no botão 'Entendido'
+    botaoFechar.addEventListener('click', fecharModal);
+
+    // Fecha se o usuário clicar no fundo escuro (fora da caixinha branca)
+    modalElemento.addEventListener('click', (evento) => {
+        if (evento.target === modalElemento) {
+            fecharModal();
+        }
+    });
+
+    fetch("PHP/administradores/listCondicoes.php")
+    .then(function (resposta) {
+        return resposta.json();
+    })
+    .then(function (condicoes) {
+        if(condicoes.erro) {
+            msg.innerText = condicoes.mensagem;
+            return;
+        }
+        if(condicoes.length === 0) {
+            msg.innerText = "Nenhuma condição cadastrada.";
+            return;
+        }
+
+        condicoes.forEach(function (condicao) {
+            const opcao = document.createElement("option");
+            opcao.value = condicao.IDCONDICAO;
+            opcao.innerText = condicao.NOME;
+            document.getElementById('userConditions').appendChild(opcao);
+        });
+    })
+    .catch(function (erro) {
+        console.error = ("Erro: ", erro);
+        msg.innerText = "Erro ao carregar condições.";
+    });
 }
