@@ -52,13 +52,13 @@ try {
 
     // Insere a denúncia com IDUSUARIO = doador logado
     $stmt = $pdo->prepare("
-        INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDUSUARIO)
-        VALUES (NOW(), :motivo, :idusuario)
-    ");
+    INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDRECLAMADOR)
+    VALUES (NOW(), :motivo, :idreclamador)"
+    );
     $stmt->execute([
-        ':motivo'    => $motivo,
-        ':idusuario' => $idUsuario,
-    ]);
+    ':motivo'       => $motivo,
+    ':idreclamador' => $idUsuario,
+]);
 
     echo json_encode([
         'erro'       => false,
