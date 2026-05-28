@@ -99,6 +99,7 @@ function abrirModalCondicao(id) {
             <div class="modal-box">
                 <button class="modal-close" id="btnFecharModal">&times;</button>
                 <h2>Alterar Condição do Usuário</h2>
+                <p id="msg"></p>
                 <select id="userConditions"><option value="">Selecione uma Condição</option></select>
                 <button id="btnAcaoModal">Salvar</button>
             </div>
@@ -108,17 +109,18 @@ function abrirModalCondicao(id) {
     // 2. Injeta o modal no final do body
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // 3. Seleciona os elementos que acabaram de ser criados para dar a funcionalidade de fechar
+    // 3. Seleciona os elementos que acabaram de ser criados 
     const modalElemento = document.getElementById('modalCondicao');
     const botaoFechar = document.getElementById('btnFecharModal');
     const botaoAcao = document.getElementById('btnAcaoModal');
+    const msg = document.getElementById('msg');
 
     // Função interna para destruir o modal do HTML
     function fecharModal() {
         modalElemento.remove(); 
     }
 
-    // Fecha ao clicar no 'X' ou no botão 'Entendido'
+    // Fecha ao clicar no 'X' 
     botaoFechar.addEventListener('click', fecharModal);
 
     // Fecha se o usuário clicar no fundo escuro (fora da caixinha branca)
@@ -150,7 +152,27 @@ function abrirModalCondicao(id) {
         });
     })
     .catch(function (erro) {
-        console.error = ("Erro: ", erro);
+        console.error("Erro: ", erro);
         msg.innerText = "Erro ao carregar condições.";
     });
+
+    // Chama a função de atualização e fecha o modal
+    botaoAcao.addEventListener('click', function(evento) {
+        const nome = document.getElementById('userConditions').value;
+        if (nome.trim() !== '') { 
+            atualizaCondicao(id, nome);
+            fecharModal(); // Só fecha se a condição for válida e enviada
+        } else {
+            msg.innerText = "Por favor, selecione uma condição antes de salvar.";
+        }
+    });
+}
+
+// Limpa a mensagem de erro assim que o usuário mexe no select para escolher uma opção
+document.getElementById('userConditions').addEventListener('change', () => {
+    msg.innerText = "";
+});
+
+function atualizaCondicao(id, nome) {
+
 }
