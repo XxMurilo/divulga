@@ -1,6 +1,7 @@
 
 CREATE VIEW VerUsuarios AS
     SELECT 
+    Usuario.IDUSUARIO,
     Usuario.NOME,
     Usuario.EMAIL,
     Usuario.TELEFONE,

@@ -19,7 +19,8 @@ async function carregarTabela(param, texto = '') {
 }
 
     // 2. Extrai o nome das colunas dinamicamente a partir da primeira linha
-    const colunas = Object.keys(dados[0]);
+    const colunas = Object.keys(dados[0])
+    .filter(coluna => coluna !== "IDUSUARIO");
     const isUserTable = param === "user";
 
     // 3. Constrói e injeta a tabela dinamicamente
@@ -39,7 +40,7 @@ async function carregarTabela(param, texto = '') {
                         ${colunas.map(coluna => `<td>${linha[coluna]}</td>`).join('')}
                         ${isUserTable ? `
                             <td>
-                                <button onclick="abrirModalCondicao(${linha.id})">Editar</button>
+                                <button onclick="abrirModalCondicao(${linha.IDUSUARIO})">Editar</button>
                             </td>
                         ` : ''}
                     </tr>
@@ -157,22 +158,68 @@ function abrirModalCondicao(id) {
     });
 
     // Chama a função de atualização e fecha o modal
-    botaoAcao.addEventListener('click', function(evento) {
-        const nome = document.getElementById('userConditions').value;
-        if (nome.trim() !== '') { 
-            atualizaCondicao(id, nome);
-            fecharModal(); // Só fecha se a condição for válida e enviada
-        } else {
-            msg.innerText = "Por favor, selecione uma condição antes de salvar.";
-        }
-    });
-}
+    botaoAcao.addEventListener('click', async function() {
+    const nome = document.getElementById('userConditions').value;
 
-// Limpa a mensagem de erro assim que o usuário mexe no select para escolher uma opção
-document.getElementById('userConditions').addEventListener('change', () => {
-    msg.innerText = "";
+    if (nome.trim() !== '') {
+
+        const sucesso = await atualizaCondicao(id, nome);
+
+        if (sucesso) {
+            fecharModal();
+            await carregarTabela('user'); // 👈 recarrega a tabela
+        }
+
+    } else {
+        msg.innerText = "Por favor, selecione uma condição antes de salvar.";
+    }
 });
 
-function atualizaCondicao(id, nome) {
+    const selectCondicoes = document.getElementById('userConditions');
 
+    // Limpa a mensagem de erro assim que o usuário mexe no select para escolher uma opção
+    selectCondicoes.addEventListener('change', () => {
+    msg.innerText = "";
+});
+}
+
+async function atualizaCondicao(id, nome) {
+    const idCondicao = String(nome).trim();
+    const idUsuario = String(id).trim(); 
+    const msg = document.getElementById('msg');
+
+    if (idCondicao === "" || idUsuario === "") {
+        msg.innerText = "Preencha todos os dados";
+        return false;
+    }
+
+    try {
+
+        const resposta = await fetch(
+            "PHP/administradores/atualizarCondicaoUsuario.php",
+            {
+                method: "POST",
+                body: new URLSearchParams({
+                    idCondicao,
+                    idUsuario
+                })
+            }
+        );
+
+        const dados = await resposta.json();
+
+        if (dados.erro) {
+            msg.innerText = dados.mensagem;
+            return false;
+        }
+
+        msg.innerText = dados.mensagem;
+        return true; 
+
+    } catch (erro) {
+
+        console.log(erro);
+        msg.innerText = "Erro ao processar resposta do servidor.";
+        return false;
+    }
 }

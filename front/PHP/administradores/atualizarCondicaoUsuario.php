@@ -1,12 +1,12 @@
 <?php 
 header('Content-Type: application/json; charset=utf-8');
-require_once('../conexaobd.php');
+require_once '../conexaoBD.php';
 
 try {
     $idCondicao = isset($_POST['idCondicao']) ? $_POST['idCondicao'] : '';
     $idUsuario = isset($_POST['idUsuario']) ? $_POST['idUsuario'] : '';
     $idCondicao = trim($idCondicao);
-    $idUsuario - trim($idUsuario);
+    $idUsuario = trim($idUsuario);
 
     if ($idCondicao === "") {
         echo json_encode(
@@ -35,7 +35,7 @@ try {
     $comando->bindValue(':idUsuario', $idUsuario, PDO::PARAM_STR);
     $comando->bindValue(':idCondicao', $idCondicao, PDO::PARAM_INT);
     $comando->execute();
-    echo json_enconde(
+    echo json_encode(
         array(
             "erro" => false,
             "mensagem" => "Condição alterada com sucesso.",
@@ -43,14 +43,14 @@ try {
             "IDUSUARIO" => $idUsuario
         ),
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-    )
+    );
 } catch(PDOException $e) {
     echo json_encode(
         array(
             "erro" => true,
             "mensagem" => "Erro ao alterar Condição.",
-            "detalhes" => $e->getMessage();
+            "detalhes" => $e->getMessage()
         ),
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-    )
+    );
 }
