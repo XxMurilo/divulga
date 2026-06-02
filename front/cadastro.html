@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>Cadastro</title>
     <link rel="stylesheet" href="CSS/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 </head>
+
 <body>
 
     <header class="topo">
@@ -28,7 +31,16 @@
                 <input type="text" name="endereco" placeholder="Endereço" required>
                 <input type="text" name="identificacao" placeholder="CPF ou CNPJ" required>
 
-                <input type="password" name="senha" placeholder="Senha (mínimo 6 caracteres)" required>
+                <div class="campo-senha">
+                    <input type="password" name="senha" id="senha" placeholder="Senha (mínimo 6 caracteres)" required>
+                    <span class="olho" onclick="alternarSenha('senha', this)"></span>
+                </div>
+
+                <div class="campo-senha">
+                    <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirmar Senha"
+                        required>
+                    <span class="olho" onclick="alternarSenha('confirmarSenha', this)">👁️</span>
+                </div>
 
                 <select name="cidade" id="cidade">
                     <option value="Ribeirão Preto">Ribeirão Preto</option>
@@ -48,5 +60,8 @@
         </div>
     </div>
 
+
+    <script src="JS/cadastro.js"></script>
 </body>
+
 </html>

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — Seeds of Good</title>
     <link rel="stylesheet" href="CSS/login.css">
     <link rel="stylesheet" href="CSS/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 </head>
+
 <body>
     <header class="topo">
         <div class="logo">Seeds of Good</div>
@@ -21,25 +24,36 @@
             <h1>Login</h1>
 
             <form action="PHP/login.php" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
 
-                <input type="email"    name="email"         placeholder="Email" required>
-
-                <input type="text"     name="identificacao" placeholder="CPF ou CNPJ" required>
-
-                <input type="password" name="senha"         placeholder="Senha" required>
-
-                <select name="tipoUsuario" id="tipoUsuario">
-                    <option value="Doador">Doador</option>
-                    <option value="Recebedor">Recebedor</option>
-                    <option value="Administrador">Administrador</option>
-                </select>
+                <div class="campo-senha">
+                    <input type="password" name="senha" id="senhaLogin" placeholder="Senha" required>
+                    <span class="olho" onclick="alternarSenha('senhaLogin', this)">👁️</span>
+                </div>
 
                 <button type="submit">Login</button>
-
             </form>
+
+            <script>
+                function alternarSenha(id, btn) {
+                    const campo = document.getElementById(id);
+                    if (campo.type === 'password') {
+                        campo.type = 'text';
+                        btn.textContent = 'visibility';
+                    } else {
+                        campo.type = 'password';
+                        btn.textContent = 'visibility_off';
+                    }
+                }
+
+                document.querySelectorAll('.olho').forEach(function (btn) {
+                    btn.textContent = 'visibility_off';
+                });
+            </script>
 
         </div>
     </div>
 
 </body>
+
 </html>

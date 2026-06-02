@@ -102,7 +102,7 @@ function abrirModalReserva(alimento) {
 
     infoAlimento.innerHTML =
         '<strong>' + esc(alimento.nomeAlimento) + '</strong>' +
-        '<span>' + esc(alimento.descricao || 'Sem descrição.') + '</span><br>' +
+        '<span class="descricao-alimento">' + esc(alimento.descricao || 'Sem descrição.') + '</span><br>' +
         '<span>Doador: ' + esc(alimento.nomeDoador) + '</span><br>' +
         '<span>Endereço: ' + esc(alimento.enderecoDoador || '—') + '</span><br>' +
         '<span>Validade: ' + validade + '</span>';
