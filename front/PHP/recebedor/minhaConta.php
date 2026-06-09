@@ -9,7 +9,7 @@ if (!isset($_SESSION['idusuario'])) {
     exit;
 }
 
-if (strtolower($_SESSION['permissao'] ?? '') !== 'doador') {
+if (strtolower($_SESSION['permissao'] ?? '') !== 'recebedor') {
     http_response_code(403);
     echo json_encode(['erro' => true, 'mensagem' => 'Acesso negado.'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -20,7 +20,7 @@ try {
         "SELECT NOME, EMAIL, TELEFONE, ENDERECO, IDENTIFICACAO
          FROM Usuario
          WHERE IDUSUARIO = :idusuario
-           AND IDPERMISSAO = (SELECT IDPERMISSAO FROM Permissao WHERE NOME='doador' LIMIT 1)
+           AND IDPERMISSAO = (SELECT IDPERMISSAO FROM Permissao WHERE NOME='recebedor' LIMIT 1)
          LIMIT 1"
     );
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);

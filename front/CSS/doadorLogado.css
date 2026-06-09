@@ -34,6 +34,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    overflow: hidden;
 }
 
 .logo {
@@ -44,6 +45,12 @@ body {
     align-items: center;
     gap: 8px;
 }
+
+.logo img {
+    height: 40px;
+    width: auto;
+}
+ 
 
 nav ul {
     list-style: none;

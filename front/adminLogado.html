@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seeds of Good — Administrador</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="CSS/adminLogado.css">
 </head>
+
 <body>
     <!-- HEADER -->
-     <header class="topo">
-        <div class="logo">Seeds of Good</div>
+    <header class="topo">
+        
+        <div class="logo">
+            <img src="img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
+            Seeds of Good
+        </div>
+
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
@@ -20,22 +29,23 @@
     </header>
 
     <!-- MAIN -->
-     <main>
+    <main>
         <!-- Search Bar -->
-         <section class="procura">
+        <section class="procura">
             <input id="search" type="text">
-         </section>
+        </section>
 
         <!-- Tables Tab -->
         <section class='tablesTab'>
-                <button type="button" class="aba" data-table="food">Alimentos Disponíveis</button>
-                <button type="button" class="aba" data-table="user">Usuários</button>
-                <button type="button" class="aba" data-table="complaint">Denúncia</button>
+            <button type="button" class="aba" data-table="food">Alimentos Disponíveis</button>
+            <button type="button" class="aba" data-table="user">Usuários</button>
+            <button type="button" class="aba" data-table="complaint">Denúncia</button>
         </section>
 
         <section id="TableView"></section>
 
         <script src="JS/admin.js"></script>
-     </main>
+    </main>
 </body>
+
 </html>

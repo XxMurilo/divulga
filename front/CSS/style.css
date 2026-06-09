@@ -64,9 +64,9 @@ body {
     gap: 10px;
 }
  
-.logo::before {
-    content: '🌿';
-    font-size: 1.3rem;
+.logo img {
+    height: 60px;
+    width: auto;
 }
  
 /* ── BOTÕES HEADER ──

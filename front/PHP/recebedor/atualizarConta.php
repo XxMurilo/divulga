@@ -9,8 +9,8 @@ if (!isset($_SESSION['idusuario'])) {
     exit;
 }
 
-// Garante que somente doadores acessam este endpoint
-if (strtolower($_SESSION['permissao'] ?? '') !== 'doador') {
+// Garante que somente recebedores acessam este endpoint
+if (strtolower($_SESSION['permissao'] ?? '') !== 'recebedor') {
     http_response_code(403);
     echo json_encode(['erro' => true, 'mensagem' => 'Acesso negado.'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -54,7 +54,7 @@ try {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
         $stmt = $pdo->prepare(
             "UPDATE Usuario SET NOME=:nome, EMAIL=:email, TELEFONE=:tel, ENDERECO=:end, SENHA=:senha
-             WHERE IDUSUARIO=:idusuario AND IDPERMISSAO=(SELECT IDPERMISSAO FROM Permissao WHERE NOME='doador' LIMIT 1)"
+             WHERE IDUSUARIO=:idusuario AND IDPERMISSAO=(SELECT IDPERMISSAO FROM Permissao WHERE NOME='recebedor' LIMIT 1)"
         );
         $stmt->execute([
             ':nome'      => $nome,
@@ -67,7 +67,7 @@ try {
     } else {
         $stmt = $pdo->prepare(
             "UPDATE Usuario SET NOME=:nome, EMAIL=:email, TELEFONE=:tel, ENDERECO=:end
-             WHERE IDUSUARIO=:idusuario AND IDPERMISSAO=(SELECT IDPERMISSAO FROM Permissao WHERE NOME='doador' LIMIT 1)"
+             WHERE IDUSUARIO=:idusuario AND IDPERMISSAO=(SELECT IDPERMISSAO FROM Permissao WHERE NOME='recebedor' LIMIT 1)"
         );
         $stmt->execute([
             ':nome'      => $nome,
