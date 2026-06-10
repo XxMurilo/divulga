@@ -11,11 +11,17 @@
 
     <!-- HEADER -->
     <header class="topo">
-        <div class="logo">Seeds of Good</div>
+
+        <div class="logo">
+            <img src="img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
+            Seeds of Good
+        </div>
+        
         <nav>
             <ul>
                 <li><a href="#" class="nav-link ativo" data-secao="alimentos">Alimentos</a></li>
                 <li><a href="#" class="nav-link" data-secao="reservas">Minhas Reservas</a></li>
+                <li><a href="#" class="nav-link" data-secao="conta">Minha Conta</a></li>
             </ul>
         </nav>
     </header>
@@ -45,6 +51,60 @@
                 Você ainda não fez nenhuma reserva.
             </div>
             <div class="lista" id="listaReservasCards"></div>
+        </div>
+    </main>
+
+    <main id="secao-conta" class="secao">
+        <h2 class="secao-titulo">Minha Conta</h2>
+        <p class="secao-subtitulo">Gerencie suas informações pessoais.</p>
+        <p id="mensagemConta" class="msg-status"></p>
+        <div class="conta-wrapper">
+
+            <!-- Visualização -->
+            <div class="conta-card" id="cardVisualizacao">
+                <div class="conta-avatar" id="avatarInicial">?</div>
+                <div class="conta-dados" id="dadosConta">
+                    <p class="carregando-conta">Carregando dados...</p>
+                </div>
+                <div class="conta-acoes">
+                    <button class="btn-editar-conta" id="btnEditarConta">✏️ Editar dados</button>
+                    <button class="btn-sair" id="btnSair">← Sair da conta</button>
+                </div>
+            </div>
+
+            <!-- Edição -->
+            <div class="conta-card conta-form" id="cardEdicao" style="display:none">
+                <h3 class="forma-titulo">Editar Dados</h3>
+                <div class="campo">
+                    <label>Nome completo</label>
+                    <input type="text" id="editNome" placeholder="Seu nome" maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>E-mail</label>
+                    <input type="email" id="editEmail" placeholder="seu@email.com" maxlength="255">
+                </div>
+                <div class="campo">
+                    <label>Telefone</label>
+                    <input type="text" id="editTelefone" placeholder="(11) 99999-9999" maxlength="30">
+                </div>
+                <div class="campo">
+                    <label>Endereço</label>
+                    <input type="text" id="editEndereco" placeholder="Rua, número, bairro" maxlength="150">
+                </div>
+                <div class="campo">
+                    <label>Nova senha <span class="campo-opcional">(deixe em branco para manter a atual)</span></label>
+                    <input type="password" id="editSenha" placeholder="••••••" maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>Confirmar nova senha</label>
+                    <input type="password" id="editSenhaConfirm" placeholder="••••••" maxlength="100">
+                </div>
+                <div class="acoes-modal">
+                    <button type="button" class="btn-cancelar" id="btnCancelarEdicao">Cancelar</button>
+                    <button type="button" class="btn-salvar" id="btnSalvarConta">Salvar alterações</button>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -86,6 +146,18 @@
             </div>
         </div>
     </div>
+    <!-- MODAL: LOGOUT -->
+    <div class="overlay" id="overlayLogout">
+        <div class="modal modal-pequeno">
+            <h2>Sair da conta?</h2>
+            <p class="modal-texto">Você será redirecionado para a tela inicial.</p>
+            <div class="acoes-modal">
+                <button class="btn-cancelar" id="btnCancelarLogout">Cancelar</button>
+                <button class="btn-sair-confirmar" id="btnConfirmarLogout">Sair</button>
+            </div>
+        </div>
+    </div>
+
     <script src="JS/recebedor.js"></script>
 </body>
 </html>

@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seeds of Good — Doador</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="CSS/doadorLogado.css">
 </head>
+
 <body>
 
     <!-- HEADER -->
     <header class="topo">
-        <div class="logo">Seeds of Good</div>
+
+        <div class="logo">
+            <img src="img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
+            Seeds of Good
+        </div>
+        
         <nav>
             <ul>
                 <li><a href="#" class="nav-link ativo" data-secao="doacoes">Doações</a></li>
@@ -112,7 +121,9 @@
             <form id="formAlimento">
                 <div class="campo">
                     <label>Tipo de Alimento</label>
-                    <select id="tipo"><option value="">Selecione o tipo...</option></select>
+                    <select id="tipo">
+                        <option value="">Selecione o tipo...</option>
+                    </select>
                 </div>
                 <div class="campo">
                     <label>Nome do Alimento</label>
@@ -128,7 +139,8 @@
                 </div>
                 <div class="campo">
                     <label>Descrição</label>
-                    <textarea id="descricao" placeholder="Ex: Cada unidade equivale a aproximadamente 1 kg." maxlength="500"></textarea>
+                    <textarea id="descricao" placeholder="Ex: Cada unidade equivale a aproximadamente 1 kg."
+                        maxlength="500"></textarea>
                 </div>
                 <div class="acoes-modal">
                     <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
@@ -154,7 +166,8 @@
             </div>
             <div class="campo">
                 <label>Motivo da Denúncia <span class="campo-opcional">(mín. 10 caracteres)</span></label>
-                <textarea id="denunciaMotivo" placeholder="Descreva o motivo da denúncia..." maxlength="1000" rows="5"></textarea>
+                <textarea id="denunciaMotivo" placeholder="Descreva o motivo da denúncia..." maxlength="1000"
+                    rows="5"></textarea>
                 <span class="contador-chars"><span id="denunciaContador">0</span>/1000</span>
             </div>
             <p id="mensagemDenuncia" class="msg-status"></p>
@@ -179,4 +192,5 @@
 
     <script src="JS/doador.js"></script>
 </body>
+
 </html>

@@ -17,6 +17,7 @@ navLinks.forEach(function(link) {
 
         if (alvo === 'reservas') carregarReservas();
         if (alvo === 'alimentos') carregarAlimentos();
+        if (alvo === 'conta') carregarConta();
     });
 });
 
@@ -102,7 +103,7 @@ function abrirModalReserva(alimento) {
 
     infoAlimento.innerHTML =
         '<strong>' + esc(alimento.nomeAlimento) + '</strong>' +
-        '<span>' + esc(alimento.descricao || 'Sem descrição.') + '</span><br>' +
+        '<span class="descricao-alimento">' + esc(alimento.descricao || 'Sem descrição.') + '</span><br>' +
         '<span>Doador: ' + esc(alimento.nomeDoador) + '</span><br>' +
         '<span>Endereço: ' + esc(alimento.enderecoDoador || '—') + '</span><br>' +
         '<span>Validade: ' + validade + '</span>';
@@ -308,6 +309,121 @@ function esc(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: MINHA CONTA
+// ══════════════════════════════════════════════════════════════════
+
+var dadosConta       = document.getElementById('dadosConta');
+var avatarInicial    = document.getElementById('avatarInicial');
+var cardVisualizacao = document.getElementById('cardVisualizacao');
+var cardEdicao       = document.getElementById('cardEdicao');
+var mensagemConta    = document.getElementById('mensagemConta');
+
+document.getElementById('btnEditarConta').addEventListener('click', function() {
+    cardVisualizacao.style.display = 'none';
+    cardEdicao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
+document.getElementById('btnCancelarEdicao').addEventListener('click', function() {
+    cardEdicao.style.display = 'none';
+    cardVisualizacao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
+document.getElementById('btnSalvarConta').addEventListener('click', salvarConta);
+
+// ── Logout ────────────────────────────────────────────────────────
+var overlayLogout = document.getElementById('overlayLogout');
+
+document.getElementById('btnSair').addEventListener('click', function() {
+    overlayLogout.style.display = 'flex';
+});
+document.getElementById('btnCancelarLogout').addEventListener('click', function() {
+    overlayLogout.style.display = 'none';
+});
+document.getElementById('btnConfirmarLogout').addEventListener('click', function() {
+    fetch('PHP/logout.php')
+        .then(function()  { window.location.href = 'telaInicial.html'; })
+        .catch(function() { window.location.href = 'telaInicial.html'; });
+});
+overlayLogout.addEventListener('click', function(e) {
+    if (e.target === overlayLogout) overlayLogout.style.display = 'none';
+});
+
+function carregarConta() {
+    dadosConta.innerHTML = '<p class="carregando-conta">Carregando dados...</p>';
+
+    fetch('PHP/recebedor/minhaConta.php')
+        .then(function(r) {
+            if (r.status === 401) { window.location.href = 'login.html'; return null; }
+            return r.json();
+        })
+        .then(function(dados) {
+            if (!dados || dados.erro) {
+                dadosConta.innerHTML = '<p>Erro ao carregar dados.</p>';
+                return;
+            }
+            var u = dados.usuario;
+            avatarInicial.textContent = u.nome ? u.nome.charAt(0).toUpperCase() : '?';
+
+            dadosConta.innerHTML =
+                '<div class="dado-item"><span class="dado-label">Nome</span><span class="dado-valor">'         + esc(u.nome || '—')          + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">E-mail</span><span class="dado-valor">'        + esc(u.email || '—')         + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">Telefone</span><span class="dado-valor">'      + esc(u.telefone || '—')      + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">Endereço</span><span class="dado-valor">'      + esc(u.endereco || '—')      + '</span></div>' +
+                '<div class="dado-item"><span class="dado-label">CPF/CNPJ</span><span class="dado-valor">'      + esc(u.identificacao || '—') + '</span></div>';
+
+            // Preenche o formulário de edição
+            document.getElementById('editNome').value     = u.nome     || '';
+            document.getElementById('editEmail').value    = u.email    || '';
+            document.getElementById('editTelefone').value = u.telefone || '';
+            document.getElementById('editEndereco').value = u.endereco || '';
+        })
+        .catch(function() { dadosConta.innerHTML = '<p>Erro ao carregar dados.</p>'; });
+}
+
+function salvarConta() {
+    var senha        = document.getElementById('editSenha').value;
+    var senhaConfirm = document.getElementById('editSenhaConfirm').value;
+
+    if (senha && senha !== senhaConfirm) {
+        mensagemConta.textContent = 'As senhas não coincidem.';
+        mensagemConta.style.color = '#e57373';
+        return;
+    }
+
+    mensagemConta.textContent = 'Salvando...';
+    mensagemConta.style.color = '';
+
+    fetch('PHP/recebedor/atualizarConta.php', {
+        method: 'POST',
+        body: new URLSearchParams({
+            nome:     document.getElementById('editNome').value.trim(),
+            email:    document.getElementById('editEmail').value.trim(),
+            telefone: document.getElementById('editTelefone').value.trim(),
+            endereco: document.getElementById('editEndereco').value.trim(),
+            senha:    senha
+        })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(dados) {
+        mensagemConta.textContent = dados.mensagem;
+        mensagemConta.style.color = dados.erro ? '#e57373' : '#2d6a4f';
+        if (!dados.erro) {
+            document.getElementById('editSenha').value        = '';
+            document.getElementById('editSenhaConfirm').value = '';
+            cardEdicao.style.display       = 'none';
+            cardVisualizacao.style.display = 'block';
+            carregarConta();
+        }
+    })
+    .catch(function() {
+        mensagemConta.textContent = 'Erro ao salvar dados.';
+        mensagemConta.style.color = '#e57373';
+    });
 }
 
 // ── Inicialização ───────────────────────────────────────────────────

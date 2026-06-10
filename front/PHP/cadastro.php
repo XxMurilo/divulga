@@ -15,9 +15,9 @@ $nome           = trim($_POST['nome']          ?? '');
 $email          = trim($_POST['email']         ?? '');
 $telefone       = trim($_POST['telefone']      ?? '');
 $endereco       = trim($_POST['endereco']      ?? '');
-$identificacao  = trim($_POST['identificacao'] ?? '');   // CPF ou CNPJ
-$identificacao = preg_replace('/\D/', '', $identificacao); // Limpa pontuação
-$senha = trim($_POST['senha']?? '');   // doc comprobatório (pode ser vazio para doadores)
+$identificacao  = trim($_POST['identificacao'] ?? '');
+$identificacao  = preg_replace('/\D/', '', $identificacao);
+$senha          = trim($_POST['senha']         ?? '');
 $cidade         = trim($_POST['cidade']        ?? '');
 $tipoUsuario    = trim($_POST['tipoUsuario']   ?? '');
  
@@ -42,23 +42,18 @@ if (strlen($identificacao) === 14) {
 
     $contexto = stream_context_create([
         'http' => [
-            'method' => 'GET',
+            'method'  => 'GET',
             'timeout' => 10
         ]
     ]);
 
     $resposta = @file_get_contents($url, false, $contexto);
 
-    // erro na API
     if ($resposta === false) {
-
         $erros[] = 'Erro ao acessar API do CNPJ.';
-
     } else {
-
         $empresa = json_decode($resposta, true);
 
-        // verifica situação cadastral
         if (
             !isset($empresa['descricao_situacao_cadastral']) ||
             $empresa['descricao_situacao_cadastral'] !== 'ATIVA'
@@ -66,9 +61,7 @@ if (strlen($identificacao) === 14) {
             $erros[] = 'Esta empresa não está ativa.';
         }
 
-        // valida natureza jurídica
         if (isset($empresa['codigo_natureza_juridica'])) {
-
             $cod = $empresa['codigo_natureza_juridica'];
 
             if (
@@ -80,14 +73,14 @@ if (strlen($identificacao) === 14) {
         }
     }
 }
- 
+
+// ── Retorna erro com alert e volta para o formulário ─────────────────────────
 if (!empty($erros)) {
-    // Volta para o formulário exibindo os erros
-    $mensagem = implode('<br>', $erros);
-    echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'>
-          <link rel='stylesheet' href='CSS/cadastro.css'></head><body>
-          <p style='color:red;padding:20px'>$mensagem</p>
-          <a href='cadastro.html'>← Voltar</a></body></html>";
+    $mensagem = implode('\n', $erros);
+    echo "<script>
+        alert('$mensagem');
+        window.history.back();
+    </script>";
     exit;
 }
  
@@ -105,17 +98,14 @@ try {
     $permissao = $stmtPerm->fetch();
  
     if (!$permissao) {
-        die("Tipo de usuário '$tipoUsuario' não encontrado na tabela Permissao. 
-             Verifique se os dados estão cadastrados no banco.");
+        die("Tipo de usuário '$tipoUsuario' não encontrado na tabela Permissao.");
     }
     $idPermissao = $permissao['IDPERMISSAO'];
  
-    // --- Condição padrão (ex.: "Ativo") ---
-    $stmtCond = $pdo->prepare(
-        "SELECT IDCONDICAO FROM Condicao LIMIT 1"
-    );
+    // --- Condição padrão ---
+    $stmtCond = $pdo->prepare("SELECT IDCONDICAO FROM Condicao LIMIT 1");
     $stmtCond->execute();
-    $condicao = $stmtCond->fetch();
+    $condicao   = $stmtCond->fetch();
     $idCondicao = $condicao ? $condicao['IDCONDICAO'] : null;
  
     // --- Cidade ---
@@ -133,18 +123,16 @@ try {
     // ── 5. Verifica duplicidade de e-mail / identificação ────────────────────
     $stmtDup = $pdo->prepare(
         "SELECT IDUSUARIO FROM Usuario
-         WHERE EMAIL = :email OR SENHA = :senha
+         WHERE EMAIL = :email OR IDENTIFICACAO = :identificacao
          LIMIT 1"
     );
-    $stmtDup->execute([':email' => $email, ':senha' => $senhaHash]);
+    $stmtDup->execute([':email' => $email, ':identificacao' => $identificacao]);
  
     if ($stmtDup->fetch()) {
-        echo "<!DOCTYPE html><html lang='pt-br'><head><meta charset='UTF-8'>
-              <link rel='stylesheet' href='CSS/cadastro.css'></head><body>
-              <p style='color:red;padding:20px'>
-                E-mail ou CPF/CNPJ já cadastrado.
-              </p>
-              <a href='cadastro.html'>← Voltar</a></body></html>";
+        echo "<script>
+            alert('E-mail ou CPF/CNPJ já cadastrado.');
+            window.history.back();
+        </script>";
         exit;
     }
  
@@ -159,15 +147,15 @@ try {
     ");
  
     $stmtInsert->execute([
-        ':nome'           => $nome,
-        ':email'          => $email,
-        ':telefone'       => $telefone,
-        ':endereco'       => $endereco,
-        ':identificacao'  => $identificacao,
-        ':senha' => $senha !== '' ? $senhaHash : null,
-        ':idpermissao'    => $idPermissao,
-        ':idcondicao'     => $idCondicao,
-        ':idcidade'       => $idCidade,
+        ':nome'          => $nome,
+        ':email'         => $email,
+        ':telefone'      => $telefone,
+        ':endereco'      => $endereco,
+        ':identificacao' => $identificacao,
+        ':senha'         => $senha !== '' ? $senhaHash : null,
+        ':idpermissao'   => $idPermissao,
+        ':idcondicao'    => $idCondicao,
+        ':idcidade'      => $idCidade,
     ]);
  
     // ── 7. Inicia sessão e redireciona ───────────────────────────────────────
@@ -175,11 +163,11 @@ try {
     $_SESSION['nome']      = $nome;
     $_SESSION['permissao'] = $tipoUsuario;
  
-    // Redireciona conforme o tipo de usuário
     if ($tipoUsuario === 'Doador') {
         header('Location: ../doadorLogado.html');
-    } else {
-        header('Location: ../telaInicial.html');
+    } if ($tipoUsuario === 'Recebedor') {
+        header('Location: ../recebedorLogado.html');
+    } else {header('Location: ../telaInicial.html');
     }
     exit;
  
@@ -187,4 +175,3 @@ try {
     http_response_code(500);
     echo "Erro ao cadastrar: " . htmlspecialchars($e->getMessage());
 }
-

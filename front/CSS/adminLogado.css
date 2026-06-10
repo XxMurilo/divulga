@@ -45,6 +45,12 @@ body {
     gap: 8px;
 }
 
+.logo img {
+    height: 60px;
+    width: auto;
+}
+ 
+
 nav ul {
     list-style: none;
     display: flex;
