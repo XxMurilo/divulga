@@ -450,9 +450,6 @@ nav ul li a.ativo {
 .status-reservado  { background: #dbeafe; color: #1d4ed8; }
 .status-cancelado  { background: #fee2e2; color: #dc2626; }
 .status-entregue   { background: #dcfce7; color: #16a34a; }
-<<<<<<< Updated upstream
-.status-disponivel { background: #d1fae5; color: #065f46; }
-=======
 .status-disponivel { background: #d1fae5; color: #065f46; }
 
 /* ══════════════════════════════════════════════════════════════════
