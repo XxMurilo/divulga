@@ -108,6 +108,7 @@ CREATE TABLE Alimento_doador (
     IDALIMENTO_DOADOR INT AUTO_INCREMENT PRIMARY KEY,
     VALIDADE DATE NOT NULL,
     QUANTIDADE INT NOT NULL,
+    IMAGEM_URL VARCHAR(255) NOT NULL,
     DESCRICAO VARCHAR(1000),
     IDUSUARIO INT,
     IDALIMENTO INT,
@@ -149,7 +150,7 @@ INSERT INTO Estado (NOME, SIGLA) VALUES ('São Paulo', 'SP'), ('Minas Gerais', '
 
 INSERT INTO Cidade (NOME, IDESTADO) VALUES ('Ribeirão Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
 
-INSERT INTO Status (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado'), ('Entregue');
+INSERT INTO Status (NOME) VALUES ('Disponível'), ('Reservado'), ('Cancelado'), ('Entregue'), ('Vencido');
 
 INSERT INTO Tipo (NOME) VALUES
 ('Verduras'), ('Legumes'), ('Frutas'), ('Grãos'), ('Carnes'), ('Peixes'),

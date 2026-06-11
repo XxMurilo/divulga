@@ -17,8 +17,6 @@ try {
     } elseif ($tabelaP == 'complaint') {
         $tabela = 'VerDenuncias';
 
-    } elseif ($tabelaP == 'reserved') {
-        $tabela = 'VerReservados';
     } else {
         echo json_encode(["erro" => "Tabela não encontrada"]);
         exit;

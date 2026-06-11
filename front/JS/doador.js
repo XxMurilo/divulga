@@ -16,12 +16,13 @@ navLinks.forEach(function(link) {
         document.getElementById('secao-' + alvo).classList.add('ativa');
 
         if (alvo === 'reservas') carregarReservas();
+        if (alvo === 'vencidos') carregarVencidos();
         if (alvo === 'conta')    carregarConta();
     });
 });
 
 // ══════════════════════════════════════════════════════════════════
-//  SEÇÃO: DOAÇÕES
+//  SEÇÃO: DOAÇÕES (Meus Alimentos)
 // ══════════════════════════════════════════════════════════════════
 const mensagem     = document.getElementById('mensagem');
 const lista        = document.getElementById('lista');
@@ -199,7 +200,7 @@ function carregarTipos() {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  SEÇÃO: MINHAS RESERVAS
+//  SEÇÃO: RESERVAS RECEBIDAS
 // ══════════════════════════════════════════════════════════════════
 const mensagemReservas   = document.getElementById('mensagemReservas');
 const listaReservasCards = document.getElementById('listaReservasCards');
@@ -285,15 +286,71 @@ function atualizarStatusReserva(idreserva, idstatus, card) {
     .then(function(dados) {
         mensagemReservas.textContent = dados.mensagem;
         if (!dados.erro) {
-            // Remove o card da tela imediatamente após confirmar ou cancelar
             if (card && card.parentNode) card.parentNode.removeChild(card);
-            // Se não restar nenhum card, mostra mensagem de lista vazia
             if (listaReservasCards.children.length === 0) {
                 msgVaziaReservas.style.display = 'block';
             }
         }
     })
     .catch(function() { mensagemReservas.textContent = 'Erro ao atualizar reserva.'; });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SEÇÃO: ALIMENTOS VENCIDOS
+// ══════════════════════════════════════════════════════════════════
+const mensagemVencidos   = document.getElementById('mensagemVencidos');
+const listaVencidosCards = document.getElementById('listaVencidosCards');
+const msgVaziaVencidos   = document.getElementById('msgVaziaVencidos');
+
+function carregarVencidos() {
+    listaVencidosCards.innerHTML = '';
+    msgVaziaVencidos.style.display = 'none';
+    mensagemVencidos.textContent = 'Carregando...';
+
+    fetch('PHP/doadores/listarAlimentosVencidos.php')
+        .then(function(r) {
+            if (r.status === 401) { window.location.href = 'login.html'; return; }
+            return r.json();
+        })
+        .then(function(dados) {
+            mensagemVencidos.textContent = '';
+            if (!dados) return;
+            if (dados.erro) { mensagemVencidos.textContent = dados.mensagem; return; }
+            if (dados.alimentos.length === 0) {
+                msgVaziaVencidos.style.display = 'block';
+                return;
+            }
+            dados.alimentos.forEach(criarCardVencido);
+        })
+        .catch(function() { mensagemVencidos.textContent = 'Erro ao carregar alimentos vencidos.'; });
+}
+
+function criarCardVencido(alimento) {
+    const card = document.createElement('div');
+    card.className = 'card-alimento card-vencido';
+
+    const validade = alimento.validade
+        ? new Date(alimento.validade + 'T00:00:00').toLocaleDateString('pt-BR')
+        : '—';
+
+    const imgHtml = alimento.imagem
+        ? '<img class="card-imagem" src="' + esc(alimento.imagem) + '" alt="' + esc(alimento.nome) + '">'
+        : '<div class="card-imagem card-imagem-placeholder">🚫</div>';
+
+    card.innerHTML =
+        imgHtml +
+        '<div class="card-info">' +
+            '<h3>' + esc(alimento.nome) + '</h3>' +
+            '<p class="card-descricao">' + esc(alimento.descricao || '—') + '</p>' +
+            '<p class="card-validade">📅 Vencido em: <strong>' + validade + '</strong></p>' +
+        '</div>' +
+        '<div class="card-tags">' +
+            '<span class="tag">' + esc(alimento.tipo) + '</span>' +
+            '<span class="tag tag-qtd">' + alimento.quantidade + ' un.</span>' +
+            '<span class="tag tag-vencido">Vencido</span>' +
+        '</div>';
+
+    listaVencidosCards.appendChild(card);
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -307,7 +364,6 @@ const denunciaMotivo     = document.getElementById('denunciaMotivo');
 const denunciaContador   = document.getElementById('denunciaContador');
 const mensagemDenuncia   = document.getElementById('mensagemDenuncia');
 
-// Contador de caracteres do motivo
 denunciaMotivo.addEventListener('input', function() {
     denunciaContador.textContent = this.value.length;
 });
@@ -319,7 +375,6 @@ overlayDenuncia.addEventListener('click', function(e) {
 
 document.getElementById('btnEnviarDenuncia').addEventListener('click', enviarDenuncia);
 
-// Busca o nome do usuário da sessão para exibir no modal (via minhaConta.php)
 var _nomeUsuarioSessao = '';
 fetch('PHP/doadores/minhaConta.php')
     .then(function(r) { return r.json(); })
@@ -330,9 +385,7 @@ fetch('PHP/doadores/minhaConta.php')
     });
 
 function abrirModalDenuncia(reserva) {
-    denunciaIdUsuario.value   = _nomeUsuarioSessao
-        ? _nomeUsuarioSessao
-        : 'Carregando...';
+    denunciaIdUsuario.value   = _nomeUsuarioSessao ? _nomeUsuarioSessao : 'Carregando...';
     denunciaReservaInfo.value = 'Reserva #' + reserva.idreserva + ' — ' + esc(reserva.alimento_nome) +
                                 ' (' + reserva.quantidade_reservada + ' un.) — ' + esc(reserva.status);
     denunciaIdReserva.value   = reserva.idreserva;
@@ -449,7 +502,6 @@ function carregarConta() {
                 '<div class="dado-item"><span class="dado-label">Endereço</span><span class="dado-valor">'      + esc(u.endereco)      + '</span></div>' +
                 '<div class="dado-item"><span class="dado-label">CPF/CNPJ</span><span class="dado-valor">'      + esc(u.identificacao) + '</span></div>';
 
-            // Preenche o formulário de edição
             document.getElementById('editNome').value     = u.nome;
             document.getElementById('editEmail').value    = u.email;
             document.getElementById('editTelefone').value = u.telefone;

@@ -1,8 +1,4 @@
 <?php
-// listarAlimentosDisponiveis.php
-// Retorna alimentos cadastrados por doadores com quantidade > 0
-// GET /PHP/recebedor/listarAlimentosDisponiveis.php
-
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once '../conexaoBD.php';
@@ -14,44 +10,65 @@ if (!isset($_SESSION['idusuario'])) {
 }
 
 try {
-    /*
-     * Junta:
-     *   Alimento_doador  (IDALIMENTO_DOADOR, VALIDADE, QUANTIDADE, DESCRICAO, IDUSUARIO, IDALIMENTO)
-     *   Alimento         (NOME do alimento)
-     *   Usuario (doador) (NOME, ENDERECO)
-     *
-     * Filtra apenas alimentos com QUANTIDADE > 0 e validade >= hoje.
-     * Exclui os próprios alimentos do usuário logado (recebedor não vê a si mesmo, mas aqui
-     * não seria problema pois recebedor não cadastra alimentos).
-     */
-    $stmt = $pdo->prepare("
-    SELECT
-        ad.IDALIMENTO_DOADOR AS idAlimentoDoador,
-        a.NOME               AS nomeAlimento,
-        ad.QUANTIDADE        AS quantidade,
-        ad.DESCRICAO         AS descricao,
-        ad.VALIDADE          AS validade,
-        u.NOME               AS nomeDoador,
-        u.ENDERECO           AS enderecoDoador
+    // Verifica se a coluna IDSTATUS já existe na tabela
+    $colExists = $pdo->query("
+        SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME   = 'Alimento_doador'
+          AND COLUMN_NAME  = 'IDSTATUS'
+    ")->fetchColumn();
 
-    FROM Alimento_doador ad
+    if ($colExists) {
+        // Marca vencidos globais antes de retornar a listagem pública
+        $pdo->exec("
+            UPDATE Alimento_doador
+            SET    IDSTATUS = (SELECT IDSTATUS FROM Status WHERE NOME = 'Vencido' LIMIT 1)
+            WHERE  VALIDADE  < CURDATE()
+              AND  IDSTATUS != (SELECT IDSTATUS FROM Status WHERE NOME = 'Vencido' LIMIT 1)
+        ");
 
-    INNER JOIN Alimento a
-        ON a.IDALIMENTO = ad.IDALIMENTO
+        $sql = "
+            SELECT
+                ad.IDALIMENTO_DOADOR  AS idAlimentoDoador,
+                a.NOME                AS nomeAlimento,
+                ad.QUANTIDADE         AS quantidade,
+                ad.DESCRICAO          AS descricao,
+                ad.VALIDADE           AS validade,
+                u.NOME                AS nomeDoador,
+                u.ENDERECO            AS enderecoDoador
+            FROM  Alimento_doador ad
+            INNER JOIN Alimento a ON a.IDALIMENTO = ad.IDALIMENTO
+            INNER JOIN Usuario  u ON u.IDUSUARIO  = ad.IDUSUARIO
+            WHERE ad.QUANTIDADE > 0
+              AND ad.IDSTATUS  != (
+                  SELECT IDSTATUS FROM Status WHERE NOME = 'Vencido' LIMIT 1
+              )
+            ORDER BY ad.IDALIMENTO_DOADOR DESC
+        ";
+    } else {
+        // Fallback: filtra por VALIDADE diretamente (antes da migração)
+        $sql = "
+            SELECT
+                ad.IDALIMENTO_DOADOR  AS idAlimentoDoador,
+                a.NOME                AS nomeAlimento,
+                ad.QUANTIDADE         AS quantidade,
+                ad.DESCRICAO          AS descricao,
+                ad.VALIDADE           AS validade,
+                u.NOME                AS nomeDoador,
+                u.ENDERECO            AS enderecoDoador
+            FROM  Alimento_doador ad
+            INNER JOIN Alimento a ON a.IDALIMENTO = ad.IDALIMENTO
+            INNER JOIN Usuario  u ON u.IDUSUARIO  = ad.IDUSUARIO
+            WHERE ad.QUANTIDADE > 0
+              AND ad.VALIDADE  >= CURDATE()
+            ORDER BY ad.IDALIMENTO_DOADOR DESC
+        ";
+    }
 
-    INNER JOIN Usuario u
-        ON u.IDUSUARIO = ad.IDUSUARIO
-
-    WHERE
-        ad.QUANTIDADE > 0
-
-    ORDER BY
-        ad.IDALIMENTO_DOADOR DESC
-");
+    $stmt = $pdo->prepare($sql);
     $stmt->execute();
-    $alimentos = $stmt->fetchAll();
 
-    echo json_encode(['sucesso' => true, 'alimentos' => $alimentos], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['sucesso' => true, 'alimentos' => $stmt->fetchAll()], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
     http_response_code(500);

@@ -23,8 +23,9 @@
         
         <nav>
             <ul>
-                <li><a href="#" class="nav-link ativo" data-secao="doacoes">Doações</a></li>
-                <li><a href="#" class="nav-link" data-secao="reservas">Minhas Reservas</a></li>
+                <li><a href="#" class="nav-link ativo" data-secao="doacoes">Meus Alimentos</a></li>
+                <li><a href="#" class="nav-link" data-secao="reservas">Reservas Recebidas</a></li>
+                <li><a href="#" class="nav-link" data-secao="vencidos">Alimentos Vencidos</a></li>
                 <li><a href="#" class="nav-link" data-secao="conta">Minha Conta</a></li>
             </ul>
         </nav>
@@ -44,9 +45,9 @@
         </div>
     </main>
 
-    <!-- SEÇÃO: MINHAS RESERVAS -->
+    <!-- SEÇÃO: RESERVAS RECEBIDAS -->
     <main id="secao-reservas" class="secao">
-        <h2 class="secao-titulo">Minhas Reservas</h2>
+        <h2 class="secao-titulo">Reservas Recebidas</h2>
         <p class="secao-subtitulo">Veja quem reservou seus alimentos e gerencie o status de cada reserva.</p>
         <p id="mensagemReservas" class="msg-status"></p>
         <div id="listaReservas">
@@ -55,6 +56,20 @@
                 Nenhuma reserva encontrada.<br>Quando alguém reservar seus alimentos, aparecerá aqui.
             </div>
             <div class="lista" id="listaReservasCards"></div>
+        </div>
+    </main>
+
+    <!-- SEÇÃO: ALIMENTOS VENCIDOS -->
+    <main id="secao-vencidos" class="secao">
+        <h2 class="secao-titulo">Alimentos Vencidos</h2>
+        <p class="secao-subtitulo">Estes alimentos passaram da data de validade e não estão disponíveis para reserva.</p>
+        <p id="mensagemVencidos" class="msg-status"></p>
+        <div id="listaVencidos">
+            <div class="lista-vazia" id="msgVaziaVencidos" style="display:none">
+                <span>✅</span>
+                Nenhum alimento vencido. Tudo em dia!
+            </div>
+            <div class="lista" id="listaVencidosCards"></div>
         </div>
     </main>
 
