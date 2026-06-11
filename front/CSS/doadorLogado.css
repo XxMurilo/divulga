@@ -732,3 +732,26 @@ nav ul li a.ativo {
 .card-vencido .card-tags {
     margin-left: auto;
 }
+
+/* ── Imagem nos cards (Meus Alimentos, Reservas e Vencidos) ───── */
+.card-alimento .card-imagem {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    border: 1px solid #e2e8f0;
+}
+
+.card-alimento .card-imagem-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: #f1f5f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border: 1px solid #e2e8f0;
+}

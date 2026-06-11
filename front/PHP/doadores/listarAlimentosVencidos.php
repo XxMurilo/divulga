@@ -4,6 +4,15 @@ session_start();
 
 require_once '../conexaoBD.php';
 
+function normalizarImagem($url) {
+    if (empty($url)) return null;
+    $url = str_replace('\\', '/', $url);
+    if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
+        return $m[0];
+    }
+    return null;
+}
+
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
     echo json_encode(
@@ -42,7 +51,8 @@ try {
                 t.NOME                AS tipo,
                 ad.QUANTIDADE         AS quantidade,
                 ad.VALIDADE           AS validade,
-                ad.DESCRICAO          AS descricao
+                ad.DESCRICAO          AS descricao,
+                ad.IMAGEM_URL         AS imagem
             FROM  Alimento_doador ad
             JOIN  Alimento  a ON ad.IDALIMENTO = a.IDALIMENTO
             JOIN  Tipo      t ON a.IDTIPO      = t.IDTIPO
@@ -62,7 +72,8 @@ try {
                 t.NOME                AS tipo,
                 ad.QUANTIDADE         AS quantidade,
                 ad.VALIDADE           AS validade,
-                ad.DESCRICAO          AS descricao
+                ad.DESCRICAO          AS descricao,
+                ad.IMAGEM_URL         AS imagem
             FROM  Alimento_doador ad
             JOIN  Alimento  a ON ad.IDALIMENTO = a.IDALIMENTO
             JOIN  Tipo      t ON a.IDTIPO      = t.IDTIPO
@@ -76,8 +87,14 @@ try {
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);
     $stmt->execute();
 
+    $alimentos = $stmt->fetchAll();
+    foreach ($alimentos as &$row) {
+        $row['imagem'] = normalizarImagem($row['imagem'] ?? null);
+    }
+    unset($row);
+
     echo json_encode(
-        ['erro' => false, 'alimentos' => $stmt->fetchAll()],
+        ['erro' => false, 'alimentos' => $alimentos],
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
     );
 

@@ -36,6 +36,41 @@ const nomeInput       = document.getElementById('nome');
 const quantidadeInput = document.getElementById('quantidade');
 const validadeInput   = document.getElementById('validade');
 const descricaoInput  = document.getElementById('descricao');
+const labelNome       = document.getElementById('labelNome');
+const fotoAlimento    = document.getElementById('fotoAlimento');
+const previewFoto     = document.getElementById('previewFoto');
+const imgPreview      = document.getElementById('imgPreview');
+
+// Tipos que são bebidas — label muda para "Nome da Bebida"
+const TIPOS_BEBIDA = ['bebidas', 'bebida'];
+
+tiposAlimento.addEventListener('change', function() {
+    const tipoNome = (this.options[this.selectedIndex]?.text || '').toLowerCase().trim();
+    if (TIPOS_BEBIDA.includes(tipoNome)) {
+        labelNome.textContent = 'Nome da Bebida';
+        nomeInput.placeholder = 'Ex: Suco de laranja, Leite, Água...';
+    } else if (tipoNome && tipoNome !== 'selecione o tipo...') {
+        labelNome.textContent = 'Nome do ' + this.options[this.selectedIndex].text;
+        nomeInput.placeholder = 'Ex: Banana, Arroz, Leite...';
+    } else {
+        labelNome.textContent = 'Nome do Alimento';
+        nomeInput.placeholder = 'Ex: Banana, Arroz, Leite...';
+    }
+});
+
+fotoAlimento.addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imgPreview.src = e.target.result;
+            previewFoto.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
+    } else {
+        previewFoto.style.display = 'none';
+        imgPreview.src = '';
+    }
+});
 
 document.getElementById('btnNovo').addEventListener('click', abrirModalNovo);
 document.getElementById('btnCancelar').addEventListener('click', fecharJanelaModal);
@@ -75,7 +110,12 @@ function criarCardAlimento(alimento) {
         ? new Date(alimento.validade + 'T00:00:00').toLocaleDateString('pt-BR')
         : '—';
 
+    const imgHtml = alimento.imagem
+        ? '<img class="card-imagem" src="' + esc(alimento.imagem) + '" alt="' + esc(alimento.nome) + '">'
+        : '<div class="card-imagem card-imagem-placeholder">🌱</div>';
+
     card.innerHTML =
+        imgHtml +
         '<div class="card-info">' +
             '<h3>' + esc(alimento.nome) + '</h3>' +
             '<p>Validade: ' + validade + ' · ' + esc(alimento.descricao || '') + '</p>' +
@@ -105,6 +145,10 @@ function abrirModalNovo() {
     nomeInput.disabled = false;
     tiposAlimento.disabled = false;
     formAlimento.reset();
+    labelNome.textContent = 'Nome do Alimento';
+    nomeInput.placeholder = 'Ex: Banana, Arroz, Leite...';
+    previewFoto.style.display = 'none';
+    imgPreview.src = '';
     overlay.style.display = 'flex';
     nomeInput.focus();
 }
@@ -128,6 +172,10 @@ function fecharJanelaModal() {
     idAlimentoInput.value  = '';
     nomeInput.disabled     = false;
     tiposAlimento.disabled = false;
+    labelNome.textContent  = 'Nome do Alimento';
+    nomeInput.placeholder  = 'Ex: Banana, Arroz, Leite...';
+    previewFoto.style.display = 'none';
+    imgPreview.src = '';
     tituloModal.textContent = 'Novo Alimento para Doação';
 }
 
@@ -137,15 +185,20 @@ function salvarAlimento(e) {
 
     if (id === '') {
         mensagem.textContent = 'Inserindo alimento...';
+
+        const formData = new FormData();
+        formData.append('nome',       nomeInput.value.trim());
+        formData.append('tipo',       tiposAlimento.value);
+        formData.append('quantidade', quantidadeInput.value);
+        formData.append('validade',   validadeInput.value);
+        formData.append('descricao',  descricaoInput.value);
+        if (fotoAlimento.files && fotoAlimento.files[0]) {
+            formData.append('foto', fotoAlimento.files[0]);
+        }
+
         fetch('PHP/doadores/inserirAlimentos.php', {
             method: 'POST',
-            body: new URLSearchParams({
-                nome:       nomeInput.value.trim(),
-                tipo:       tiposAlimento.value,
-                quantidade: quantidadeInput.value,
-                validade:   validadeInput.value,
-                descricao:  descricaoInput.value
-            })
+            body: formData
         })
         .then(function(r) { return r.json(); })
         .then(function(dados) {
@@ -239,7 +292,12 @@ function criarCardReserva(reserva) {
         'Cancelado':  'status-cancelado'
     }[reserva.status] || '';
 
+    const imgHtml = reserva.imagem
+        ? '<img class="card-imagem" src="' + esc(reserva.imagem) + '" alt="' + esc(reserva.alimento_nome) + '">'
+        : '<div class="card-imagem card-imagem-placeholder">🌱</div>';
+
     card.innerHTML =
+        imgHtml +
         '<div class="card-info">' +
             '<h3>' + esc(reserva.alimento_nome) + '</h3>' +
             '<p>Reservado por: <strong>' + esc(reserva.recebedor_nome) + '</strong></p>' +

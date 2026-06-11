@@ -3,6 +3,15 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once '../conexaoBD.php';
 
+function normalizarImagem($url) {
+    if (empty($url)) return null;
+    $url = str_replace('\\', '/', $url);
+    if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
+        return $m[0];
+    }
+    return null;
+}
+
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
     echo json_encode(['erro' => 'Não autorizado.'], JSON_UNESCAPED_UNICODE);
@@ -34,6 +43,7 @@ try {
                 ad.QUANTIDADE         AS quantidade,
                 ad.DESCRICAO          AS descricao,
                 ad.VALIDADE           AS validade,
+                ad.IMAGEM_URL         AS imagem,
                 u.NOME                AS nomeDoador,
                 u.ENDERECO            AS enderecoDoador
             FROM  Alimento_doador ad
@@ -54,6 +64,7 @@ try {
                 ad.QUANTIDADE         AS quantidade,
                 ad.DESCRICAO          AS descricao,
                 ad.VALIDADE           AS validade,
+                ad.IMAGEM_URL         AS imagem,
                 u.NOME                AS nomeDoador,
                 u.ENDERECO            AS enderecoDoador
             FROM  Alimento_doador ad
@@ -68,7 +79,13 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
-    echo json_encode(['sucesso' => true, 'alimentos' => $stmt->fetchAll()], JSON_UNESCAPED_UNICODE);
+    $alimentos = $stmt->fetchAll();
+    foreach ($alimentos as &$row) {
+        $row['imagem'] = normalizarImagem($row['imagem'] ?? null);
+    }
+    unset($row);
+
+    echo json_encode(['sucesso' => true, 'alimentos' => $alimentos], JSON_UNESCAPED_UNICODE);
 
 } catch (PDOException $e) {
     http_response_code(500);

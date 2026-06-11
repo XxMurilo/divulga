@@ -141,8 +141,15 @@
                     </select>
                 </div>
                 <div class="campo">
-                    <label>Nome do Alimento</label>
+                    <label id="labelNome">Nome do Alimento</label>
                     <input type="text" id="nome" placeholder="Ex: Banana, Arroz, Leite..." maxlength="100">
+                </div>
+                <div class="campo">
+                    <label>Foto do item <span class="campo-opcional">(opcional)</span></label>
+                    <input type="file" id="fotoAlimento" accept="image/*">
+                    <div id="previewFoto" style="display:none; margin-top:8px;">
+                        <img id="imgPreview" src="" alt="Pré-visualização" style="max-width:100%; max-height:180px; border-radius:8px; border:1px solid #ccc;">
+                    </div>
                 </div>
                 <div class="campo">
                     <label>Quantidade (unidades)</label>

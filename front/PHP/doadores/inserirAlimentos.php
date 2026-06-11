@@ -29,6 +29,33 @@ try {
 
     $idusuario = $_SESSION['idusuario'];
 
+    // ── UPLOAD DE FOTO ──
+    // __DIR__ = front/PHP/doadores  →  ../../  = front/
+    $imagem_url = null;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+        $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $extensao = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($extensao, $extensoesPermitidas)) {
+            echo json_encode(['erro' => true, 'mensagem' => 'Formato de imagem inválido. Use JPG, PNG, GIF ou WEBP.']);
+            exit;
+        }
+
+        // Pasta física: front/uploads/alimentos/
+        $pastaUploads = realpath(__DIR__ . '/../../') . '/uploads/alimentos/';
+        if (!is_dir($pastaUploads)) {
+            mkdir($pastaUploads, 0755, true);
+        }
+
+        $nomeArquivo = uniqid('alimento_', true) . '.' . $extensao;
+        $destino = $pastaUploads . $nomeArquivo;
+
+        if (move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
+            // Caminho relativo a front/ — usado como src no HTML
+            $imagem_url = 'uploads/alimentos/' . $nomeArquivo;
+        }
+    }
+
     // ── VERIFICA SE ALIMENTO JÁ EXISTE ──
 
     $sql = "SELECT IDALIMENTO
@@ -75,6 +102,7 @@ try {
                 VALIDADE,
                 QUANTIDADE,
                 DESCRICAO,
+                IMAGEM_URL,
                 IDUSUARIO,
                 IDALIMENTO
             )
@@ -83,6 +111,7 @@ try {
                 :validade,
                 :quantidade,
                 :descricao,
+                :imagem_url,
                 :idusuario,
                 :idalimento
             )";
@@ -93,6 +122,7 @@ try {
         ':validade'   => $validade,
         ':quantidade' => $quantidade,
         ':descricao'  => $descricao,
+        ':imagem_url' => $imagem_url,
         ':idusuario'  => $idusuario,
         ':idalimento' => $idalimento
     ]);

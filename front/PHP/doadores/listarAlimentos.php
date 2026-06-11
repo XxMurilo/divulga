@@ -4,6 +4,19 @@ session_start();
 
 require_once '../conexaoBD.php';
 
+// Normaliza o caminho da imagem para sempre ser relativo a front/
+// Aceita: null, '', 'uploads/...', '/uploads/...', caminho absoluto do servidor
+function normalizarImagem($url) {
+    if (empty($url)) return null;
+    // Remove caminho absoluto do servidor, mantém só a parte relativa
+    // Ex: /var/www/html/front/uploads/alimentos/x.jpg → uploads/alimentos/x.jpg
+    $url = str_replace('\\', '/', $url);
+    if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
+        return $m[0];
+    }
+    return null;
+}
+
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
     echo json_encode(
@@ -41,7 +54,8 @@ try {
                        t.NOME               AS tipo,
                        ad.QUANTIDADE        AS quantidade,
                        ad.VALIDADE          AS validade,
-                       ad.DESCRICAO         AS descricao
+                       ad.DESCRICAO         AS descricao,
+                       ad.IMAGEM_URL        AS imagem
                 FROM  Alimento_doador ad
                 JOIN  Alimento a ON ad.IDALIMENTO = a.IDALIMENTO
                 JOIN  Tipo     t ON a.IDTIPO      = t.IDTIPO
@@ -58,7 +72,8 @@ try {
                        t.NOME               AS tipo,
                        ad.QUANTIDADE        AS quantidade,
                        ad.VALIDADE          AS validade,
-                       ad.DESCRICAO         AS descricao
+                       ad.DESCRICAO         AS descricao,
+                       ad.IMAGEM_URL        AS imagem
                 FROM  Alimento_doador ad
                 JOIN  Alimento a ON ad.IDALIMENTO = a.IDALIMENTO
                 JOIN  Tipo     t ON a.IDTIPO      = t.IDTIPO
@@ -71,8 +86,17 @@ try {
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);
     $stmt->execute();
 
+    $alimentos = $stmt->fetchAll();
+
+    // Normaliza o caminho da imagem: garante que seja sempre 'uploads/alimentos/arquivo.ext'
+    // ou null se não houver foto, independente de como foi salvo no banco
+    foreach ($alimentos as &$row) {
+        $row['imagem'] = normalizarImagem($row['imagem'] ?? null);
+    }
+    unset($row);
+
     echo json_encode(
-        ['erro' => false, 'alimentos' => $stmt->fetchAll()],
+        ['erro' => false, 'alimentos' => $alimentos],
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
     );
 

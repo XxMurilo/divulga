@@ -60,7 +60,12 @@ function criarCardAlimento(alimento) {
         ? new Date(alimento.validade + 'T00:00:00').toLocaleDateString('pt-BR')
         : '—';
 
+    var imgHtml = alimento.imagem
+        ? '<img class="card-imagem" src="' + esc(alimento.imagem) + '" alt="' + esc(alimento.nomeAlimento) + '">'
+        : '<div class="card-imagem card-imagem-placeholder">🌱</div>';
+
     card.innerHTML =
+        imgHtml +
         '<div class="card-info">' +
             '<h3>' + esc(alimento.nomeAlimento) + '</h3>' +
             '<p>' + esc(alimento.descricao || '') + '</p>' +
@@ -195,7 +200,12 @@ function criarCardReserva(reserva) {
         ? '<button class="btn-cancelar-reserva">✖ Cancelar</button>'
         : '';
 
+    var imgHtml = reserva.imagem
+        ? '<img class="card-imagem" src="' + esc(reserva.imagem) + '" alt="' + esc(reserva.nomeAlimento) + '">'
+        : '<div class="card-imagem card-imagem-placeholder">🌱</div>';
+
     card.innerHTML =
+        imgHtml +
         '<div class="card-info">' +
             '<h3>' + esc(reserva.nomeAlimento) + '</h3>' +
             '<p>Doador: <strong>' + esc(reserva.nomeDoador) + '</strong></p>' +

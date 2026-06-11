@@ -3,6 +3,15 @@ header('Content-Type: application/json; charset=utf-8');
 session_start();
 require_once '../conexaoBD.php';
 
+function normalizarImagem($url) {
+    if (empty($url)) return null;
+    $url = str_replace('\\', '/', $url);
+    if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
+        return $m[0];
+    }
+    return null;
+}
+
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
     echo json_encode(['erro' => true, 'mensagem' => 'Não autorizado.'], JSON_UNESCAPED_UNICODE);
@@ -15,6 +24,7 @@ try {
                    r.QUANTIDADE_RESERVADA AS quantidade_reservada,
                    s.NOME             AS status,
                    a.NOME             AS alimento_nome,
+                   ad.IMAGEM_URL      AS imagem,
                    u.NOME             AS recebedor_nome,
                    u.EMAIL            AS recebedor_email,
                    u.TELEFONE         AS recebedor_telefone
@@ -30,8 +40,14 @@ try {
     $stmt->bindParam(':idusuario', $_SESSION['idusuario'], PDO::PARAM_INT);
     $stmt->execute();
 
+    $reservas = $stmt->fetchAll();
+    foreach ($reservas as &$row) {
+        $row['imagem'] = normalizarImagem($row['imagem'] ?? null);
+    }
+    unset($row);
+
     echo json_encode(
-        ['erro' => false, 'reservas' => $stmt->fetchAll()],
+        ['erro' => false, 'reservas' => $reservas],
         JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
     );
 } catch (PDOException $e) {

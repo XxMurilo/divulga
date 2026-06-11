@@ -4,6 +4,15 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once '../conexaoBD.php';
 
+function normalizarImagem($url) {
+    if (empty($url)) return null;
+    $url = str_replace('\\', '/', $url);
+    if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
+        return $m[0];
+    }
+    return null;
+}
+
 if (!isset($_SESSION['idusuario'])) {
     http_response_code(401);
     echo json_encode(['erro' => 'Não autorizado.'], JSON_UNESCAPED_UNICODE);
@@ -20,6 +29,7 @@ try {
             r.QUANTIDADE_RESERVADA   AS quantidadeReservada,
             a.NOME                   AS nomeAlimento,
             ad.VALIDADE              AS validade,
+            ad.IMAGEM_URL            AS imagem,
             u.IDUSUARIO              AS idDoador,
             u.NOME                   AS nomeDoador,
             u.ENDERECO               AS enderecoDoador,
@@ -34,6 +44,10 @@ try {
     ");
     $stmt->execute([':idusuario' => $idUsuario]);
     $reservas = $stmt->fetchAll();
+    foreach ($reservas as &$row) {
+        $row['imagem'] = normalizarImagem($row['imagem'] ?? null);
+    }
+    unset($row);
 
     echo json_encode(['sucesso' => true, 'reservas' => $reservas], JSON_UNESCAPED_UNICODE);
 
