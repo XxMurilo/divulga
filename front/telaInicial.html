@@ -10,59 +10,133 @@
 
 <body>
 
+    <!-- ═══════════════════════════════════════
+         HEADER
+    ══════════════════════════════════════════ -->
     <header class="topo">
-
         <div class="logo">
             <img src="img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
             Seeds of Good
         </div>
-
         <div class="botoesHeader">
             <button id="btnLogin" onclick="window.location.href='login.html'">Login</button>
             <button id="btnCadastro" onclick="window.location.href='cadastro.html'">Cadastro</button>
         </div>
     </header>
 
+    <!-- ═══════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-conteudo">
+            <span class="hero-badge">Plataforma de Doação Alimentar</span>
+            <h1 class="hero-titulo">Menos desperdício.<br>Mais impacto.</h1>
+            <p class="hero-subtitulo">
+                Conectamos estabelecimentos com alimentos próximos do vencimento
+                a pessoas e entidades que precisam — de forma simples, gratuita e segura.
+            </p>
+            <div class="hero-botoes">
+                <a class="hero-btn-primario" href="cadastro.html">Quero cadastrar minha empresa</a>
+                <a class="hero-btn-secundario" href="cadastro.html">Quero receber doações</a>
+            </div>
+        </div>
+        <div class="hero-stat-faixa">
+            <div class="hero-stat">
+                <span class="hero-stat-numero">30%</span>
+                <span class="hero-stat-label">dos alimentos produzidos<br>no mundo são desperdiçados</span>
+            </div>
+            <div class="hero-stat-divisor"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-numero">46 mi</span>
+                <span class="hero-stat-label">de brasileiros em situação<br>de insegurança alimentar</span>
+            </div>
+            <div class="hero-stat-divisor"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-numero">100%</span>
+                <span class="hero-stat-label">gratuito para doadores<br>e recebedores</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         CONTEÚDO PRINCIPAL
+    ══════════════════════════════════════════ -->
     <main class="conteudo">
 
         <section class="descricao">
 
+            <!-- O que é o sistema -->
             <div class="div-infoSuperior">
-                <h1>O que é o sistema?</h1>
+                <h1>O que é o Seeds of Good?</h1>
                 <p>
-                    Sistema web voltado à redução do desperdício de alimentos
-                    em estabelecimentos comerciais.
+                    Uma plataforma digital intermediária, sem fins lucrativos, desenvolvida para
+                    reduzir o desperdício de alimentos em estabelecimentos comerciais.
+                    Conectamos <strong>doadores</strong> — empresas e comércios com produtos próximos
+                    ao vencimento — a <strong>recebedores</strong> interessados em aproveitá-los por
+                    meio de doação voluntária.
                 </p>
-
                 <p>
-                    O desperdício alimentar representa atualmente um dos principais
-                    problemas sociais, econômicos e ambientais do mundo, ocasionando
-                    impactos relacionados à insegurança alimentar, produção excessiva
-                    de resíduos e prejuízos financeiros.
-                </p>
-
-                <p>
-                    Diante desse cenário, o sistema propõe conectar empresas que
-                    possuem alimentos próximos da data de vencimento a consumidores
-                    interessados em adquirir esses produtos por meio de doações.
+                    O desperdício alimentar é um dos maiores problemas sociais, econômicos e
+                    ambientais do nosso tempo: gera insegurança alimentar, produz resíduos
+                    desnecessários e representa prejuízo financeiro para toda a cadeia produtiva.
+                    O Seeds of Good existe para mudar esse cenário, uma doação de cada vez.
                 </p>
             </div>
 
+            <!-- Para quem é -->
+            <div class="div-para-quem">
+                <h2 class="para-quem-titulo">Para quem é?</h2>
+                <div class="perfis-lista">
+
+                    <div class="perfil-coluna">
+                        <span class="perfil-tag">Sou Doador</span>
+                        <h3 class="perfil-titulo">Estabelecimentos &amp; Empresas</h3>
+                        <p class="perfil-desc">
+                            Supermercados, padarias, restaurantes e qualquer comércio
+                            com alimentos próximos do vencimento.
+                        </p>
+                        <ul class="perfil-itens">
+                            <li>Publique alimentos disponíveis em segundos</li>
+                            <li>Gerencie anúncios e reservas pelo painel</li>
+                            <li>Reduza desperdício e custos de descarte</li>
+                        </ul>
+                        <a class="perfil-btn" href="cadastro.html">Cadastrar empresa</a>
+                    </div>
+
+                    <div class="perfil-coluna">
+                        <span class="perfil-tag">Sou Recebedor</span>
+                        <h3 class="perfil-titulo">Pessoas &amp; Entidades</h3>
+                        <p class="perfil-desc">
+                            Qualquer pessoa, família ou organização social interessada
+                            em receber doações de forma totalmente gratuita.
+                        </p>
+                        <ul class="perfil-itens">
+                            <li>Navegue pelos alimentos disponíveis perto de você</li>
+                            <li>Reserve com um clique e retire no local</li>
+                            <li>Sem custos e sem burocracia</li>
+                        </ul>
+                        <a class="perfil-btn" href="cadastro.html">Criar minha conta</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Como acessar -->
             <div class="div-infoInferior">
                 <h2>Como acessar?</h2>
-                <p href="cadastro.html">
-                    Para acessar o sistema, clique em <strong><a href="cadastro.html">Cadastro</a></strong> para
-                    criar uma conta ou em <strong><a href="login.html">Login</a></strong> para acessar
-                    sua conta existente.
+                <p>
+                    Clique em <strong><a href="cadastro.html">Cadastro</a></strong> para criar sua conta
+                    — o processo é rápido e gratuito — ou em <strong><a href="login.html">Login</a></strong>
+                    se você já possui uma conta existente.
                 </p>
                 <p>
-                    Após o cadastro ou login, você poderá explorar as funcionalidades
-                    do sistema, visualizar os alimentos disponíveis para doação e
-                    entrar em contato com doadores ou recebedores.
+                    Após o acesso, você terá um painel personalizado: doadores podem publicar e gerenciar
+                    alimentos, enquanto recebedores navegam pelos itens disponíveis, realizam reservas
+                    e combinam a retirada diretamente com o doador.
                 </p>
                 <p>
-                    Nosso objetivo é contribuir para a redução do desperdício de
-                    alimentos de forma simples, rápida e acessível.
+                    Nosso objetivo é tornar a conexão entre quem tem e quem precisa o mais simples,
+                    rápida e acessível possível.
                 </p>
             </div>
 
@@ -70,14 +144,16 @@
 
     </main>
 
+    <!-- ═══════════════════════════════════════
+         RODAPÉ
+    ══════════════════════════════════════════ -->
     <footer class="rodape">
         <div class="rodape-conteudo">
-            <p>Contato: <strong>Murilo Morgon</strong></p>
-            <p>Telefone: (84) 9 1234-5678</p>
-            <div class="rodape-redes">Espaço reservado para ícones de redes sociais</div>
+            <p>Seeds of Good &copy; 2026 &mdash; Todos os direitos reservados.</p>
+            <p>Contato: <strong>Murillo Morgon</strong> &nbsp;|&nbsp; +55 (16) 99700-7479 &nbsp;|&nbsp; murillomorgon@gmail.com</p>
+            <p><a class="rodape-link" href="termos.html">Termos de Uso</a> &nbsp;·&nbsp; Foro: <strong>Ribeirão Preto — SP</strong></p>
         </div>
     </footer>
 
 </body>
-
 </html>
