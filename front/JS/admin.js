@@ -13,10 +13,10 @@ async function carregarTabela(param, texto = '') {
     }
 
     if (dados.erro) {
-    document.getElementById('TableView').innerHTML =
+        document.getElementById('TableView').innerHTML =
         `<p>${dados.erro}</p>`;
-    return;
-}
+        return;
+    }
 
     // 2. Extrai o nome das colunas dinamicamente a partir da primeira linha
     const colunas = Object.keys(dados[0])
