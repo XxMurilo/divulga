@@ -28,6 +28,15 @@ function validarEEnviar() {
     const aviso = document.getElementById('avisoTermos');
     const bloco = document.getElementById('blocoTermos');
 
+    // 1. Valida senhas ANTES de qualquer outra coisa
+    const s1 = document.getElementById('senha').value;
+    const s2 = document.getElementById('confirmarSenha').value;
+    if (s1 !== s2) {
+        alert('As senhas não coincidem. Por favor, verifique.');
+        return; // para aqui, não envia
+    }
+
+    // 2. Valida termos
     if (!cb.checked) {
         aviso.classList.add('visivel');
         bloco.classList.add('erro');
@@ -39,6 +48,8 @@ function validarEEnviar() {
     bloco.classList.remove('erro');
     document.querySelector('form').submit();
 }
+
+// O listener de submit pode ser removido ou mantido como fallback
 
 document.getElementById('aceitarTermos').addEventListener('change', function () {
     if (this.checked) {

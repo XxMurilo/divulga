@@ -165,9 +165,10 @@ try {
  
     if ($tipoUsuario === 'Doador') {
         header('Location: ../doadorLogado.html');
-    } if ($tipoUsuario === 'Recebedor') {
+    } elseif ($tipoUsuario === 'Recebedor') {
         header('Location: ../recebedorLogado.html');
-    } else {header('Location: ../telaInicial.html');
+    } else {
+        header('Location: ../telaInicial.html');
     }
     exit;
  
