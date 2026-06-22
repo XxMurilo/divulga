@@ -85,7 +85,7 @@ if (!empty($erros)) {
 }
  
 // ── 3. Hash da senha ─────────────────────────────────────────────────────────
-$senhaHash = password_hash($senha, PASSWORD_BCRYPT);
+$senhaHash = password_hash($senha, PASSWORD_DEFAULT);
  
 // ── 4. Busca IDs das tabelas auxiliares ──────────────────────────────────────
 try {
@@ -164,11 +164,11 @@ try {
     $_SESSION['permissao'] = $tipoUsuario;
  
     if ($tipoUsuario === 'Doador') {
-        header('Location: ../doadorLogado.html');
+        header('Location: ../front/doadorLogado.html');
     } elseif ($tipoUsuario === 'Recebedor') {
-        header('Location: ../recebedorLogado.html');
+        header('Location: ../front/recebedorLogado.html');
     } else {
-        header('Location: ../telaInicial.html');
+        header('Location: ../index.html');
     }
     exit;
  

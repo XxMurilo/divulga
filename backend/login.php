@@ -55,3 +55,6 @@ try {
     http_response_code(500);
     echo "Erro no login: " . htmlspecialchars($e->getMessage());
 }
+
+
+Quando digito um usuario admin como joão e a senha correta, ele não me redireciona para a página de admin, mas sim para a mesma tela exibe mensagem de senha incorreta. Isso acontece mesmo com a senha correta. O que pode estar causando esse problema?
