@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Seeds of Good</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="assets/css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+
+<body>
+    <header class="topo">
+
+        <div class="logo">
+            <img src="assets/img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
+            Seeds of Good
+        </div>
+
+        <div class="VoltarInicio">
+            <button id="btnVoltar" onclick="window.location.href='index.html'">Voltar para o início</button>
+        </div>
+    </header>
+
+    <div class="areaLogin">
+        <div class="login">
+
+            <h1>Login</h1>
+
+            <form action="backend/login.php" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+
+                <div class="campo-senha">
+                    <input type="password" name="senha" id="senhaLogin" placeholder="Senha" required>
+                    <span class="olho" onclick="alternarSenha('senhaLogin', this)">👁️</span>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div id="msgErro" class="msg-erro" role="alert" style="display:none"></div>
+
+            <div class="login-rodape">
+                <p>Não tem conta? <a href="cadastro.html">Cadastre-se grátis</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/login.js"></script>
+</body>
+
+</html>

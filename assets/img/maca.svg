@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 108" fill="#2d6a4f">
+  <!-- apple body -->
+  <path d="M50 30 C29 30 12 47 12 67 C12 87 27 106 50 106 C73 106 88 87 88 67 C88 47 71 30 50 30Z"/>
+  <!-- stem -->
+  <rect x="46" y="14" width="8" height="18" rx="4"/>
+  <!-- leaf -->
+  <path d="M54 22 C58 11 76 13 72 24 C70 30 56 28 54 22Z"/>
+</svg>

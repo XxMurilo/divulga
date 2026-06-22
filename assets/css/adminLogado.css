@@ -1,0 +1,171 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --verde-escuro:  #1b4332;
+    --verde-medio:   #2d6a4f;
+    --verde-vivo:    #40916c;
+    --verde-claro:   #74c69d;
+    --verde-palido:  #d8f3dc;
+    --verde-suave:   #d8f3dc;
+    --branco:        #ffffff;
+    --cinza-fundo:   #f4f9f6;
+    --texto-escuro:  #1b2e22;
+    --texto-suave:   #4a6358;
+    --cinza:         #4a6358;
+    --borda:         #c7e8d0;
+    --transicao:     all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background-color: var(--cinza-fundo);
+    font-family: 'Inter', sans-serif;
+    color: var(--texto-escuro);
+    min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.topo {
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    box-shadow: 0 4px 24px rgba(27, 67, 50, 0.45);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: var(--branco);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 60px;
+    width: auto;
+}
+ 
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+}
+
+nav ul li a {
+    color: rgba(255, 255, 255, .85);
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 500;
+    transition: color .2s;
+}
+
+nav ul li a:hover {
+    color: #fff;
+}
+
+/* ── TAB ── */
+.tablesTab {
+    margin-top: 3vh;
+    margin-left: 3vh;
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 0px;
+} 
+
+.aba {
+    padding: 1%;
+    color: var(--branco);
+    font-size: .9rem;
+    border: 0px;
+    background-color: var(--verde-medio);
+}
+
+.selecionado {
+    background-color: var(--verde-escuro);
+}
+
+#admView {
+    margin-left: 3vh;
+    max-width: 96%;
+}
+
+#admView thead{
+    background-color: var(--verde-medio);
+    color: var(--branco);
+    border-color: var(--verde-medio);
+}
+
+#admView thead tr td {
+    padding: 0 5px 0 5px;
+}
+
+#admView tbody tr td {
+    padding: 0 5px 0 5px;
+}
+
+.procura {
+    margin-top: 4vh;
+    border-radius: 10px;
+    margin-left: 3vh;
+    max-width: 96%;
+    background-color: var(--verde-suave);
+    padding: 5px 8px 5px 8px;
+
+}
+
+#search {
+    border: none;
+    outline: none;
+    background-color: inherit;
+    width: 100%;
+}
+
+/* O fundo escuro que cobre a tela inteira */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* A caixa do modal em si */
+.modal-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Botão de fechar */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
