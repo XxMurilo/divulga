@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro — Seeds of Good</title>
+    <link rel="stylesheet" href="assets/css/cadastro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="topo">
+        
+        <div class="logo">
+            <img src="assets/img/LogoTCC_Transparente.png" alt="Logo Seeds of Good">
+            Seeds of Good
+        </div>
+
+        <div class="VoltarInicio">
+            <button id="btnVoltar" onclick="window.location.href='index.html'">Voltar para o início</button>
+        </div>
+    </header>
+
+    <div class="areaCadastro">
+        <div class="cadastro">
+
+            <h1>Cadastro</h1>
+
+            <!-- action aponta para o PHP; method POST para não expor dados na URL -->
+            <form action="backend/cadastro.php" method="POST">
+
+                <input type="text" name="nome" placeholder="Nome Completo" required>
+                <input type="email" name="email" placeholder="Email" required>
+
+                <div class="campo-duplo">
+                    <input type="text" name="telefone" placeholder="Telefone" required>
+                    <input type="text" name="identificacao" placeholder="CPF ou CNPJ" required>
+                </div>
+
+                <input type="text" name="endereco" placeholder="Endereço" required>
+
+                <div class="campo-duplo">
+                    <div class="campo-senha">
+                        <input type="password" name="senha" id="senha" placeholder="Senha (mín. 6 caracteres)" required>
+                        <span class="olho" onclick="alternarSenha('senha', this)"></span>
+                    </div>
+                    <div class="campo-senha">
+                        <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirmar Senha" required>
+                        <span class="olho" onclick="alternarSenha('confirmarSenha', this)">👁️</span>
+                    </div>
+                </div>
+
+                <div class="campo-duplo">
+                    <select name="cidade" id="cidade">
+                        <option value="Ribeirão Preto">Ribeirão Preto</option>
+                        <option value="Sertãozinho">Sertãozinho</option>
+                    </select>
+                    <select name="tipoUsuario" id="tipoUsuario">
+                        <option value="Doador">Doador</option>
+                        <option value="Recebedor">Recebedor</option>
+                    </select>
+                </div>
+
+                <div class="aceite-row" id="blocoTermos">
+                    <input type="checkbox" id="aceitarTermos" name="aceitarTermos" required>
+                    <label for="aceitarTermos" class="aceite-label">
+                        <span class="aceite-box" aria-hidden="true">
+                            <svg class="check-icon" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="aceite-texto">
+                            Li e concordo com os
+                            <a href="front/termos.html" target="_blank" class="link-termos" onclick="event.stopPropagation()">Termos de Uso e Responsabilidades</a>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="aceite-aviso" id="avisoTermos">
+                    <span>⚠</span> Aceite os Termos de Uso para continuar.
+                </div>
+
+                <button id="btnCadastrar" type="button" onclick="validarEEnviar()">Cadastrar</button>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <script src="assets/js/cadastro.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    --verde-escuro:  #1b4332;
+    --verde-medio:   #2d6a4f;
+    --verde-vivo:    #40916c;
+    --verde-claro:   #74c69d;
+    --verde-palido:  #d8f3dc;
+    --branco:        #ffffff;
+    --cinza-fundo:   #f4f9f6;
+    --texto-escuro:  #1b2e22;
+    --texto-suave:   #4a6358;
+    --transicao:     all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    background: var(--cinza-fundo);
+    background-image:
+        radial-gradient(circle at 12% 22%, rgba(116, 198, 157, 0.13) 0%, transparent 52%),
+        radial-gradient(circle at 88% 78%, rgba(27, 67, 50, 0.09) 0%, transparent 52%);
+    color: var(--texto-escuro);
+}
+
+/* ── HEADER ── */
+.topo {
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    box-shadow: 0 4px 24px rgba(27, 67, 50, 0.45);
+    flex-shrink: 0;
+}
+
+.logo {
+    color: var(--branco);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img { height: 52px; width: auto; }
+
+.VoltarInicio button {
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--branco);
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+}
+
+.VoltarInicio button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--branco);
+    transform: translateY(-2px);
+}
+
+/* ── ÁREA PRINCIPAL (centraliza verticalmente) ── */
+.areaLogin {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* ── CARD DO LOGIN ── */
+.login {
+    width: 100%;
+    max-width: 440px;
+    background: var(--branco);
+    padding: 48px 44px;
+    border-radius: 24px;
+    box-shadow:
+        0 1px 3px rgba(27, 67, 50, 0.06),
+        0 12px 48px rgba(27, 67, 50, 0.12);
+    border: 1px solid rgba(116, 198, 157, 0.18);
+}
+
+.login h1 {
+    text-align: center;
+    color: var(--verde-escuro);
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+}
+
+.login h1::after {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde-claro), var(--verde-vivo));
+    border-radius: 4px;
+    margin: 12px auto 28px;
+}
+
+.login form { display: flex; flex-direction: column; }
+
+/* ── INPUTS ── */
+.login input,
+.login select {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border: 1.5px solid rgba(27, 67, 50, 0.13);
+    border-radius: 12px;
+    background: var(--cinza-fundo);
+    font-size: 0.95rem;
+    color: var(--texto-escuro);
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+    outline: none;
+}
+
+.login input::placeholder { color: #9fb8ae; }
+
+.login input:focus,
+.login select:focus {
+    border-color: var(--verde-claro);
+    background: var(--branco);
+    box-shadow: 0 0 0 3px rgba(116, 198, 157, 0.18);
+}
+
+/* ── CAMPO SENHA ── */
+.campo-senha {
+    position: relative;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.campo-senha input {
+    padding-right: 48px;
+    margin-bottom: 0;
+}
+
+.campo-senha .olho {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Material Symbols Outlined';
+    font-size: 20px;
+    color: var(--verde-medio);
+    opacity: 0.55;
+    padding: 0;
+    line-height: 1;
+    user-select: none;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.campo-senha .olho:hover {
+    opacity: 1;
+    color: var(--verde-escuro);
+}
+
+/* ── BOTÃO SUBMIT ── */
+.login button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--verde-vivo) 0%, var(--verde-medio) 100%);
+    color: var(--branco);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+    box-shadow: 0 4px 16px rgba(64, 145, 108, 0.32);
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+}
+
+.login button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(64, 145, 108, 0.48);
+}
+
+/* ── RODAPÉ DO CARD ── */
+.login-rodape {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--texto-suave);
+    padding-top: 20px;
+    border-top: 1px solid rgba(116, 198, 157, 0.2);
+}
+
+.login-rodape a {
+    color: var(--verde-vivo);
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.login-rodape a:hover { color: var(--verde-escuro); }
+
+/* ── MENSAGEM DE ERRO ── */
+.msg-erro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff2f2;
+    border: 1.5px solid #f5c2c2;
+    border-left: 4px solid #e05353;
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin-top: 16px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #7a1f1f;
+    animation: sacudir 0.35s ease;
+}
+
+.msg-erro::before {
+    content: '⚠';
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+@keyframes sacudir {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(-6px); }
+    40%  { transform: translateX(6px); }
+    60%  { transform: translateX(-4px); }
+    80%  { transform: translateX(4px); }
+    100% { transform: translateX(0); }
+}

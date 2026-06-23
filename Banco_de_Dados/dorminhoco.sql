@@ -108,6 +108,7 @@ CREATE TABLE Alimento_doador (
     IDALIMENTO_DOADOR INT AUTO_INCREMENT PRIMARY KEY,
     VALIDADE DATE NOT NULL,
     QUANTIDADE INT NOT NULL,
+    IMAGEM_URL VARCHAR(255) NULL DEFAULT NULL,
     DESCRICAO VARCHAR(1000),
     IDUSUARIO INT,
     IDALIMENTO INT,
@@ -145,15 +146,15 @@ INSERT INTO Permissao (NOME) VALUES ('Doador'), ('Recebedor'), ('Administrador')
 
 INSERT INTO Condicao (NOME) VALUES ('Ativo'), ('Inativo'), ('Pendente');
 
-INSERT INTO Estado (NOME, SIGLA) VALUES ('São Paulo', 'SP'), ('Minas Gerais', 'MG'), ('Bahia', 'BA');
+INSERT INTO Estado (NOME, SIGLA) VALUES ('Sao Paulo', 'SP'), ('Minas Gerais', 'MG'), ('Bahia', 'BA');
 
-INSERT INTO Cidade (NOME, IDESTADO) VALUES ('Ribeirão Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
+INSERT INTO Cidade (NOME, IDESTADO) VALUES ('Ribeirao Preto', 1), ('Uberlândia', 2), ('Salvador', 3);
 
 INSERT INTO Status (NOME) VALUES ('Reservado'), ('Cancelado'), ('Entregue');
 
 INSERT INTO Tipo (NOME) VALUES
-('Verduras'), ('Legumes'), ('Frutas'), ('Grãos'), ('Carnes'), ('Peixes'),
-('Ovos'), ('Laticínios'), ('Massas'), ('Pães'), ('Bebidas'), ('Doces'),
+('Verduras'), ('Legumes'), ('Frutas'), ('Graos'), ('Carnes'), ('Peixes'),
+('Ovos'), ('Laticínios'), ('Massas'), ('Paes'), ('Bebidas'), ('Doces'),
 ('Temperos'), ('Congelados'), ('Embutidos'), ('Enlatados');
 
 INSERT INTO Alimento (NOME, IDTIPO) VALUES
@@ -168,6 +169,9 @@ INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDRECLAMADOR, IDDENUNCIADO) VALUES
 ('2026-05-18 10:30:00', 'Descarte inadequado de alimentos', 2, 1),
 ('2026-05-17 14:20:00', 'Registro de contato suspeito', 1, NULL),
 ('2026-05-16 09:10:00', 'Reclamação sobre entrega atrasada', 3, NULL);
+
+-- Se o banco já existir e IMAGEM_URL foi criada como NOT NULL, rode:
+-- ALTER TABLE Alimento_doador MODIFY COLUMN IMAGEM_URL VARCHAR(255) NULL DEFAULT NULL;
 
 INSERT INTO Alimento_doador (VALIDADE, QUANTIDADE, DESCRICAO, IDUSUARIO, IDALIMENTO) VALUES
 ('2026-06-01', 10, 'Arroz integral em sacos de 1kg', 1, 1),

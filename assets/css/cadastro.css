@@ -1,0 +1,358 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+:root {
+    --verde-escuro:  #1b4332;
+    --verde-medio:   #2d6a4f;
+    --verde-vivo:    #40916c;
+    --verde-claro:   #74c69d;
+    --verde-palido:  #d8f3dc;
+    --branco:        #ffffff;
+    --cinza-fundo:   #f4f9f6;
+    --texto-escuro:  #1b2e22;
+    --texto-suave:   #4a6358;
+    --transicao:     all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    background: var(--cinza-fundo);
+    background-image:
+        radial-gradient(circle at 12% 22%, rgba(116, 198, 157, 0.13) 0%, transparent 52%),
+        radial-gradient(circle at 88% 78%, rgba(27, 67, 50, 0.09) 0%, transparent 52%);
+    color: var(--texto-escuro);
+}
+
+/* ── HEADER ── */
+.topo {
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    box-shadow: 0 4px 24px rgba(27, 67, 50, 0.45);
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    color: var(--branco);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img { height: 52px; width: auto; }
+
+.VoltarInicio button {
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--branco);
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+}
+
+.VoltarInicio button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--branco);
+    transform: translateY(-2px);
+}
+
+/* ── ÁREA PRINCIPAL ── */
+.areaCadastro {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 0;
+}
+
+/* ── CARD DO CADASTRO ── */
+.cadastro {
+    width: 100%;
+    max-width: 620px;
+    background: var(--branco);
+    padding: 32px 40px;
+    border-radius: 24px;
+    box-shadow:
+        0 1px 3px rgba(27, 67, 50, 0.06),
+        0 12px 48px rgba(27, 67, 50, 0.12);
+    border: 1px solid rgba(116, 198, 157, 0.18);
+}
+
+.cadastro h1 {
+    text-align: center;
+    color: var(--verde-escuro);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+}
+
+.cadastro h1::after {
+    content: '';
+    display: block;
+    width: 44px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--verde-claro), var(--verde-vivo));
+    border-radius: 4px;
+    margin: 10px auto 20px;
+}
+
+.cadastro form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── CAMPOS DUPLOS (grid 2 colunas) ── */
+.campo-duplo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.campo-duplo > input,
+.campo-duplo > select,
+.campo-duplo > .campo-senha {
+    margin-bottom: 0;
+}
+
+/* ── INPUTS E SELECTS ── */
+.cadastro input,
+.cadastro select {
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 10px;
+    border: 1.5px solid rgba(27, 67, 50, 0.13);
+    border-radius: 12px;
+    background: var(--cinza-fundo);
+    font-size: 0.9rem;
+    color: var(--texto-escuro);
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.cadastro input::placeholder { color: #9fb8ae; }
+
+.cadastro input:focus,
+.cadastro select:focus {
+    border-color: var(--verde-claro);
+    background: var(--branco);
+    box-shadow: 0 0 0 3px rgba(116, 198, 157, 0.18);
+}
+
+.cadastro select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6358' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* ── CAMPO SENHA ── */
+.campo-senha {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.campo-senha input {
+    padding-right: 48px;
+    margin-bottom: 0;
+}
+
+.campo-senha .olho {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Material Symbols Outlined';
+    font-size: 20px;
+    color: var(--verde-medio);
+    opacity: 0.55;
+    padding: 0;
+    line-height: 1;
+    user-select: none;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.campo-senha .olho:hover {
+    opacity: 1;
+    color: var(--verde-escuro);
+}
+
+/* ── BOTÃO CADASTRAR ── */
+.cadastro button#btnCadastrar,
+.cadastro button[type="submit"],
+.cadastro button[type="button"] {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--verde-vivo) 0%, var(--verde-medio) 100%);
+    color: var(--branco);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transicao);
+    box-shadow: 0 4px 16px rgba(64, 145, 108, 0.32);
+    margin-top: 6px;
+    letter-spacing: 0.01em;
+}
+
+.cadastro button#btnCadastrar:hover,
+.cadastro button[type="submit"]:hover,
+.cadastro button[type="button"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(64, 145, 108, 0.48);
+}
+
+/* ── ACEITE DE TERMOS ── */
+.aceite-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    position: relative;
+}
+
+.aceite-row input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.aceite-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+}
+
+.aceite-box {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid rgba(27, 67, 50, 0.22);
+    background: var(--cinza-fundo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.aceite-label:hover .aceite-box {
+    border-color: var(--verde-claro);
+    box-shadow: 0 0 0 3px rgba(116, 198, 157, 0.18);
+}
+
+#aceitarTermos:checked ~ .aceite-label .aceite-box {
+    background: var(--verde-medio);
+    border-color: var(--verde-medio);
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+}
+
+.check-icon {
+    width: 11px;
+    height: 11px;
+    stroke-dasharray: 18;
+    stroke-dashoffset: 18;
+    transition: stroke-dashoffset 0.22s ease;
+}
+
+#aceitarTermos:checked ~ .aceite-label .check-icon {
+    stroke-dashoffset: 0;
+}
+
+.aceite-texto {
+    font-size: 0.87rem;
+    color: var(--texto-suave);
+    line-height: 1.4;
+}
+
+.link-termos {
+    color: var(--verde-vivo);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(64, 145, 108, 0.35);
+    text-underline-offset: 3px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+.link-termos:hover {
+    color: var(--verde-escuro);
+    text-decoration-color: var(--verde-escuro);
+}
+
+.aceite-row.erro .aceite-box {
+    border-color: #d94f4f;
+    box-shadow: 0 0 0 3px rgba(217, 79, 79, 0.15);
+    animation: shake 0.32s ease;
+}
+
+.aceite-row.erro .aceite-texto { color: #b83232; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-5px); }
+    75%       { transform: translateX(5px); }
+}
+
+.aceite-aviso {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #b83232;
+    padding: 0 2px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-bottom: 0;
+    transition: max-height 0.28s ease, opacity 0.28s ease, margin-bottom 0.28s ease;
+}
+
+.aceite-aviso.visivel {
+    max-height: 30px;
+    opacity: 1;
+    margin-bottom: 14px;
+}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 600px) {
+    .topo         { padding: 0 20px; }
+    .cadastro     { padding: 24px 20px; }
+    .areaCadastro { padding: 16px; align-items: flex-start; }
+    .campo-duplo  { grid-template-columns: 1fr; }
+}

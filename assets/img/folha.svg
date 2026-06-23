@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 112">
+  <!-- leaf body -->
+  <path d="M40 108 C17 90 4 62 8 37 C12 12 68 12 72 37 C76 62 63 90 40 108Z" fill="#2d6a4f"/>
+  <!-- center vein -->
+  <path d="M40 108 L40 24" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.45"/>
+  <!-- side veins -->
+  <path d="M40 88 Q26 74 14 68"   stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.35"/>
+  <path d="M40 72 Q54 60 66 54"   stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.35"/>
+  <path d="M40 56 Q27 44 17 40"   stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.30"/>
+  <path d="M40 42 Q52 32 62 30"   stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.30"/>
+</svg>
