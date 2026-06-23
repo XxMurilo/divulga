@@ -244,7 +244,7 @@ navLinks.forEach(function(link) {
 
 function carregarConta() {
     dadosConta.innerHTML = '<p class="carregando-conta">Carregando dados...</p>';
-    fetch('PHP/administradores/minhaConta.php')
+    fetch('../backend/administradores/minhaConta.php')
         .then(function(r) {
             if (r.status === 401) { window.location.href = 'login.html'; return; }
             return r.json();
@@ -286,7 +286,7 @@ function salvarConta() {
     mensagemConta.textContent = 'Salvando...';
     mensagemConta.style.color = '';
 
-    fetch('PHP/administradores/atualizarConta.php', {
+    fetch('../backend/administradores/atualizarConta.php', {
         method: 'POST',
         body: new URLSearchParams({
             nome:     document.getElementById('editNome').value.trim(),
