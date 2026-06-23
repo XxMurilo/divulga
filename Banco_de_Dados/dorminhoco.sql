@@ -160,10 +160,11 @@ INSERT INTO Tipo (NOME) VALUES
 INSERT INTO Alimento (NOME, IDTIPO) VALUES
 ('Arroz Integral', 4), ('Alface', 1), ('Suco de Laranja', 11);
 
+-- Senhas em hash bcrypt: carlos=123456 | mariana=654321 | joao=admin123
 INSERT INTO Usuario (NOME, EMAIL, TELEFONE, ENDERECO, IDENTIFICACAO, SENHA, IDPERMISSAO, IDCONDICAO, IDCIDADE) VALUES
-('Carlos Henrique', 'carlos@gmail.com', '(16)99999-1111', 'Rua das Flores, 120 - Centro', '12345678900', '123456', 1, 1, 1),
-('Mariana Souza', 'mariana@gmail.com', '(16)98888-2222', 'Av. Brasil, 450 - Jardim América', '98765432100', '654321', 2, 1, 2),
-('João Pedro', 'joao@gmail.com', '(16)97777-3333', 'Rua XV de Novembro, 300 - Vila Nova', '45678912300', 'admin123', 3, 1, 1);
+('Carlos Henrique', 'carlos@gmail.com', '(16)99999-1111', 'Rua das Flores, 120 - Centro', '12345678900', '$2y$10$58hAY9z6j5TjNAYu8cil1OgucufoC4HDs7mgOx7PLNCNWvZgSRDSC', 1, 1, 1),
+('Mariana Souza', 'mariana@gmail.com', '(16)98888-2222', 'Av. Brasil, 450 - Jardim América', '98765432100', '$2y$10$Q.4OufZBH2M0h1xrvybb0.rIPJaMpQo8wc2Txle6VXgj5GoB5m5fu', 2, 1, 2),
+('João Pedro', 'joao@gmail.com', '(16)97777-3333', 'Rua XV de Novembro, 300 - Vila Nova', '45678912300', '$2y$10$ZNe2QYcG03bd4Gt81I8Dy.0hUNkyf3FoXC15azV6uPr9nIULNZwyW', 3, 1, 1);
 
 INSERT INTO Denuncia (DIA_HORA, MOTIVO, IDRECLAMADOR, IDDENUNCIADO) VALUES
 ('2026-05-18 10:30:00', 'Descarte inadequado de alimentos', 2, 1),
