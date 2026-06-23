@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\xampp\\\\mysql\\\\bin\\\\mysql.exe\" -u root tcc_alimento -e \"SHOW FULL TABLES WHERE Table_type = 'VIEW';\")"
+    ]
+  }
+}
