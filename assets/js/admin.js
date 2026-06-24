@@ -242,6 +242,24 @@ navLinks.forEach(function(link) {
     });
 });
 
+const dadosConta       = document.getElementById('dadosConta');
+const avatarInicial    = document.getElementById('avatarInicial');
+const cardVisualizacao = document.getElementById('cardVisualizacao');
+const cardEdicao       = document.getElementById('cardEdicao');
+const mensagemConta    = document.getElementById('mensagemConta');
+
+document.getElementById('btnEditarConta').addEventListener('click', function() {
+    cardVisualizacao.style.display = 'none';
+    cardEdicao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
+document.getElementById('btnCancelarEdicao').addEventListener('click', function() {
+    cardEdicao.style.display = 'none';
+    cardVisualizacao.style.display = 'block';
+    mensagemConta.textContent = '';
+});
+
 function carregarConta() {
     dadosConta.innerHTML = '<p class="carregando-conta">Carregando dados...</p>';
     fetch('../backend/administradores/minhaConta.php')
@@ -314,4 +332,52 @@ function salvarConta() {
     });
 }
 
-carregarConta()
+const overlayLogout = document.getElementById('overlayLogout');
+
+document.getElementById('btnSair').addEventListener('click', function() {
+    overlayLogout.style.display = 'flex';
+});
+document.getElementById('btnCancelarLogout').addEventListener('click', function() {
+    overlayLogout.style.display = 'none';
+});
+document.getElementById('btnConfirmarLogout').addEventListener('click', function() {
+    fetch('../backend/logout.php')
+        .then(function()  { window.location.href = '../index.html'; })
+        .catch(function() { window.location.href = '../index.html'; });
+});
+overlayLogout.addEventListener('click', function(e) {
+    if (e.target === overlayLogout) overlayLogout.style.display = 'none';
+});
+
+async function verificarAutenticacaoEIniciar() {
+    try {
+        const resposta = await fetch('../backend/administradores/minhaConta.php');
+        
+        // Se o servidor responder que não está autorizado (401 ou 403)
+        if (resposta.status === 401 || resposta.status === 403) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        const dados = await resposta.json();
+
+        // Caso o seu PHP retorne erro dentro do JSON indicando falta de login
+        if (!dados || dados.erro) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        // Se chegou até aqui, o usuário está logado! Pode iniciar a tela.
+        _nomeUsuarioSessao = dados.usuario.nome || '';
+        
+        // Agora sim, carrega os dados com segurança
+        carregarConta(); 
+        
+    } catch (erro) {
+        console.error("Erro na verificação de sessão:", erro);
+        window.location.href = '../login.html';
+    }
+}
+
+// Executa a verificação assim que o script terminar de ler as funções
+verificarAutenticacaoEIniciar();
