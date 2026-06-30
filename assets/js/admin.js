@@ -351,30 +351,59 @@ overlayLogout.addEventListener('click', function(e) {
 
 async function verificarAutenticacaoEIniciar() {
     try {
-        const resposta = await fetch('../backend/administradores/minhaConta.php');
+        // 1. Verifica a autenticação básica
+        const respostaAutenticacao = await fetch('../backend/administradores/minhaConta.php');
         
-        // Se o servidor responder que não está autorizado (401 ou 403)
-        if (resposta.status === 401 || resposta.status === 403) {
+        if (!respostaAutenticacao.ok || respostaAutenticacao.status === 401 || respostaAutenticacao.status === 403) {
             window.location.href = '../login.html';
             return;
         }
 
-        const dados = await resposta.json();
+        const dados = await respostaAutenticacao.json();
 
-        // Caso o seu PHP retorne erro dentro do JSON indicando falta de login
-        if (!dados || dados.erro) {
+        if (!dados || dados.erro || !dados.usuario) {
             window.location.href = '../login.html';
             return;
         }
 
-        // Se chegou até aqui, o usuário está logado! Pode iniciar a tela.
+        // Define o nome do usuário na sessão
         _nomeUsuarioSessao = dados.usuario.nome || '';
         
-        // Agora sim, carrega os dados com segurança
+        // 2. Verifica a condição do usuário (agora dentro do mesmo escopo)
+        const responseCondicao = await fetch('../backend/verifyCondicao.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: dados.usuario.idusuario })
+        });
+        
+        if (!responseCondicao.ok) {
+            throw new Error("Erro ao verificar condição no servidor");
+        }
+
+        const respostaCondicao = await responseCondicao.json();
+
+        if (respostaCondicao.erro === true) {
+            alert(respostaCondicao.mensagem);
+            window.location.href = '../index.html';
+            return; // Interrompe a execução aqui
+        } 
+        
+        if (respostaCondicao.SystemError === true) {
+            console.error(respostaCondicao.mensagem);
+            alert('Erro na requisição');
+            window.location.href = '../login.html';
+            return;
+        }
+
+        console.log(respostaCondicao.mensagem);
+
+        // 3. Se passou por TODAS as validações, inicia a tela com segurança
         carregarConta(); 
         
     } catch (erro) {
-        console.error("Erro na verificação de sessão:", erro);
+        console.error("Erro no fluxo de verificação:", erro);
         window.location.href = '../login.html';
     }
 }

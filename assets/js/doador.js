@@ -609,6 +609,65 @@ function salvarConta() {
     });
 }
 
+async function verificarAutenticacaoEIniciar() {
+    try {
+        // 1. Verifica a autenticação básica
+        const respostaAutenticacao = await fetch('../backend/doadores/minhaConta.php');
+        
+        if (!respostaAutenticacao.ok || respostaAutenticacao.status === 401 || respostaAutenticacao.status === 403) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        const dados = await respostaAutenticacao.json();
+
+        if (!dados || dados.erro || !dados.usuario) {
+            window.location.href = '../login.html';
+            return;
+        }
+
+        // Define o nome do usuário na sessão
+        _nomeUsuarioSessao = dados.usuario.nome || '';
+        
+        // 2. Verifica a condição do usuário (agora dentro do mesmo escopo)
+        const responseCondicao = await fetch('../backend/verifyCondicao.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: dados.usuario.idusuario })
+        });
+        
+        if (!responseCondicao.ok) {
+            throw new Error("Erro ao verificar condição no servidor");
+        }
+
+        const respostaCondicao = await responseCondicao.json();
+
+        if (respostaCondicao.erro === true) {
+            alert(respostaCondicao.mensagem);
+            window.location.href = '../index.html';
+            return; // Interrompe a execução aqui
+        } 
+        
+        if (respostaCondicao.SystemError === true) {
+            console.error(respostaCondicao.mensagem);
+            alert('Erro na requisição');
+            window.location.href = '../login.html';
+            return;
+        }
+
+        console.log(respostaCondicao.mensagem);
+
+        // 3. Se passou por TODAS as validações, inicia a tela com segurança
+        carregarConta(); 
+        
+    } catch (erro) {
+        console.error("Erro no fluxo de verificação:", erro);
+        window.location.href = '../login.html';
+    }
+}
+
 // ── Utilitário: escapa HTML ────────────────────────────────────────
 function esc(str) {
     return String(str || '')
@@ -621,3 +680,4 @@ function esc(str) {
 // ── Inicializar ───────────────────────────────────────────────────
 listarAlimentos();
 carregarTipos();
+verificarAutenticacaoEIniciar();
