@@ -209,6 +209,8 @@ function criarCardReserva(reserva) {
         '<div class="card-info">' +
             '<h3>' + esc(reserva.nomeAlimento) + '</h3>' +
             '<p>Doador: <strong>' + esc(reserva.nomeDoador) + '</strong></p>' +
+            '<p>Endereço: ' + esc(reserva.enderecoDoador || '—') + '</p>' +
+            '<p>Telefone: ' + esc(reserva.telefoneDoador || '—') + '</p>' +
             '<p>Validade: ' + validade + ' · Quantidade: ' + reserva.quantidadeReservada + ' un.</p>' +
         '</div>' +
         '<div class="card-tags">' +

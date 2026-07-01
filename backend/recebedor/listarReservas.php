@@ -34,6 +34,7 @@ try {
             u.IDUSUARIO              AS idDoador,
             u.NOME                   AS nomeDoador,
             u.ENDERECO               AS enderecoDoador,
+            u.TELEFONE               AS telefoneDoador,
             s.NOME                   AS statusReserva
         FROM  Reserva r
         INNER JOIN Alimento_doador ad ON ad.IDALIMENTO_DOADOR = r.IDALIMENTO_DOADOR
