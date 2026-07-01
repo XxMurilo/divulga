@@ -3,18 +3,28 @@
 // ══════════════════════════════════════════════════════════════════
 
 // ── Navegação entre seções ─────────────────────────────────────────
+// Captura todos os botões do menu e todas as seções de conteúdo.
 const navLinks = document.querySelectorAll('.nav-link');
 const secoes   = document.querySelectorAll('.secao');
 
+// Para cada link de navegação, define o comportamento ao clicar.
 navLinks.forEach(function(link) {
     link.addEventListener('click', function(e) {
+        // Impede o redirecionamento padrão do link.
         e.preventDefault();
+
+        // Lê o valor do atributo data-secao para saber qual seção mostrar.
         const alvo = this.dataset.secao;
+
+        // Remove o estilo ativo de todos os links e seções.
         navLinks.forEach(function(l) { l.classList.remove('ativo'); });
         secoes.forEach(function(s)   { s.classList.remove('ativa'); });
+
+        // Marca o link e a seção atual como ativos.
         this.classList.add('ativo');
         document.getElementById('secao-' + alvo).classList.add('ativa');
 
+        // Carrega o conteúdo da seção clicada, se necessário.
         if (alvo === 'reservas') carregarReservas();
         if (alvo === 'vencidos') carregarVencidos();
         if (alvo === 'conta')    carregarConta();
@@ -24,6 +34,7 @@ navLinks.forEach(function(link) {
 // ══════════════════════════════════════════════════════════════════
 //  SEÇÃO: DOAÇÕES (Meus Alimentos)
 // ══════════════════════════════════════════════════════════════════
+// Captura referências dos elementos HTML usados na seção de doações.
 const mensagem     = document.getElementById('mensagem');
 const lista        = document.getElementById('lista');
 const msgVazia     = document.getElementById('msgVazia');
@@ -41,9 +52,10 @@ const fotoAlimento    = document.getElementById('fotoAlimento');
 const previewFoto     = document.getElementById('previewFoto');
 const imgPreview      = document.getElementById('imgPreview');
 
-// Tipos que são bebidas — label muda para "Nome da Bebida"
+// Lista de rótulos que representam bebidas — usada para alterar o texto do label.
 const TIPOS_BEBIDA = ['bebidas', 'bebida'];
 
+// Atualiza o texto do label e o placeholder quando o tipo do alimento muda.
 tiposAlimento.addEventListener('change', function() {
     const tipoNome = (this.options[this.selectedIndex]?.text || '').toLowerCase().trim();
     if (TIPOS_BEBIDA.includes(tipoNome)) {
@@ -58,6 +70,7 @@ tiposAlimento.addEventListener('change', function() {
     }
 });
 
+// Mostra uma prévia da foto selecionada pelo usuário.
 fotoAlimento.addEventListener('change', function() {
     if (this.files && this.files[0]) {
         const reader = new FileReader();
@@ -72,6 +85,7 @@ fotoAlimento.addEventListener('change', function() {
     }
 });
 
+// Botões do modal e do formulário de alimentos.
 document.getElementById('btnNovo').addEventListener('click', abrirModalNovo);
 document.getElementById('btnCancelar').addEventListener('click', fecharJanelaModal);
 formAlimento.addEventListener('submit', salvarAlimento);
@@ -79,6 +93,7 @@ overlay.addEventListener('click', function(e) {
     if (e.target === overlay) fecharJanelaModal();
 });
 
+// Busca os alimentos do doador e preenche a lista de cards.
 function listarAlimentos() {
     lista.innerHTML = '';
     msgVazia.style.display = 'none';
@@ -102,6 +117,7 @@ function listarAlimentos() {
         .catch(function() { mensagem.textContent = 'Erro ao carregar alimentos.'; });
 }
 
+// Cria um card HTML para cada alimento retornado.
 function criarCardAlimento(alimento) {
     const card = document.createElement('div');
     card.className = 'card-alimento';
@@ -139,6 +155,7 @@ function criarCardAlimento(alimento) {
     lista.appendChild(card);
 }
 
+// Abre o modal com campos em branco para inserir um novo alimento.
 function abrirModalNovo() {
     tituloModal.textContent = 'Novo Alimento para Doação';
     idAlimentoInput.value = '';
@@ -153,6 +170,7 @@ function abrirModalNovo() {
     nomeInput.focus();
 }
 
+// Abre o modal preenchido para alterar apenas quantidade, validade e descrição.
 function abrirModalAlterar(alimento) {
     tituloModal.textContent = 'Alterar Alimento';
     idAlimentoInput.value   = alimento.id;
@@ -166,6 +184,7 @@ function abrirModalAlterar(alimento) {
     overlay.style.display   = 'flex';
 }
 
+// Fecha o modal de alimento e reseta os campos.
 function fecharJanelaModal() {
     overlay.style.display = 'none';
     formAlimento.reset();
@@ -179,6 +198,7 @@ function fecharJanelaModal() {
     tituloModal.textContent = 'Novo Alimento para Doação';
 }
 
+// Salva um alimento novo ou altera um alimento existente.
 function salvarAlimento(e) {
     e.preventDefault();
     const id = idAlimentoInput.value;
@@ -225,6 +245,7 @@ function salvarAlimento(e) {
     }
 }
 
+// Exclui o alimento após confirmação do usuário.
 function excluirAlimento(alimento) {
     if (!confirm('Deseja realmente excluir o alimento "' + alimento.nome + '"?')) return;
     mensagem.textContent = 'Excluindo...';
@@ -237,6 +258,7 @@ function excluirAlimento(alimento) {
         .catch(function() { mensagem.textContent = 'Erro ao excluir.'; });
 }
 
+// Carrega a lista de tipos de alimento para o select do formulário.
 function carregarTipos() {
     fetch('../backend/doadores/pesquisarAlimentos.php?tipos=1')
         .then(function(r) { return r.json(); })
@@ -259,6 +281,7 @@ const mensagemReservas   = document.getElementById('mensagemReservas');
 const listaReservasCards = document.getElementById('listaReservasCards');
 const msgVaziaReservas   = document.getElementById('msgVaziaReservas');
 
+// Busca as reservas recebidas e cria cards para elas.
 function carregarReservas() {
     listaReservasCards.innerHTML = '';
     msgVaziaReservas.style.display = 'none';
@@ -282,6 +305,7 @@ function carregarReservas() {
         .catch(function() { mensagemReservas.textContent = 'Erro ao carregar reservas.'; });
 }
 
+// Cria o card visual de cada reserva.
 function criarCardReserva(reserva) {
     const card = document.createElement('div');
     card.className = 'card-alimento card-reserva';
@@ -334,6 +358,7 @@ function criarCardReserva(reserva) {
     listaReservasCards.appendChild(card);
 }
 
+// Atualiza o status da reserva e remove o card quando concluído.
 function atualizarStatusReserva(idreserva, idstatus, card) {
     mensagemReservas.textContent = 'Atualizando...';
     fetch('../backend/doadores/atualizarReserva.php', {
@@ -360,6 +385,7 @@ const mensagemVencidos   = document.getElementById('mensagemVencidos');
 const listaVencidosCards = document.getElementById('listaVencidosCards');
 const msgVaziaVencidos   = document.getElementById('msgVaziaVencidos');
 
+// Busca os alimentos vencidos e mostra a lista.
 function carregarVencidos() {
     listaVencidosCards.innerHTML = '';
     msgVaziaVencidos.style.display = 'none';
@@ -383,6 +409,7 @@ function carregarVencidos() {
         .catch(function() { mensagemVencidos.textContent = 'Erro ao carregar alimentos vencidos.'; });
 }
 
+// Cria o card de alimento vencido.
 function criarCardVencido(alimento) {
     const card = document.createElement('div');
     card.className = 'card-alimento card-vencido';
@@ -422,6 +449,7 @@ const denunciaMotivo     = document.getElementById('denunciaMotivo');
 const denunciaContador   = document.getElementById('denunciaContador');
 const mensagemDenuncia   = document.getElementById('mensagemDenuncia');
 
+// Atualiza contador de caracteres enquanto o usuário digita o motivo.
 denunciaMotivo.addEventListener('input', function() {
     denunciaContador.textContent = this.value.length;
 });
@@ -442,6 +470,7 @@ fetch('../backend/doadores/minhaConta.php')
         }
     });
 
+// Abre o modal de denúncia preenchendo as informações da reserva.
 function abrirModalDenuncia(reserva) {
     denunciaIdUsuario.value   = _nomeUsuarioSessao ? _nomeUsuarioSessao : 'Carregando...';
     denunciaReservaInfo.value = 'Reserva #' + reserva.idreserva + ' — ' + esc(reserva.alimento_nome) +
@@ -455,6 +484,7 @@ function abrirModalDenuncia(reserva) {
     denunciaMotivo.focus();
 }
 
+// Fecha o modal de denúncia e limpa os campos.
 function fecharModalDenuncia() {
     overlayDenuncia.style.display = 'none';
     denunciaMotivo.value = '';
@@ -462,6 +492,7 @@ function fecharModalDenuncia() {
     mensagemDenuncia.textContent = '';
 }
 
+// Envia a denúncia para o backend após validação do motivo.
 function enviarDenuncia() {
     const motivo    = denunciaMotivo.value.trim();
     const idReserva = denunciaIdReserva.value;
@@ -506,12 +537,14 @@ const cardVisualizacao = document.getElementById('cardVisualizacao');
 const cardEdicao       = document.getElementById('cardEdicao');
 const mensagemConta    = document.getElementById('mensagemConta');
 
+// Abre o formulário de edição da conta.
 document.getElementById('btnEditarConta').addEventListener('click', function() {
     cardVisualizacao.style.display = 'none';
     cardEdicao.style.display = 'block';
     mensagemConta.textContent = '';
 });
 
+// Volta para o modo apenas visualização sem salvar.
 document.getElementById('btnCancelarEdicao').addEventListener('click', function() {
     cardEdicao.style.display = 'none';
     cardVisualizacao.style.display = 'block';
@@ -538,6 +571,7 @@ overlayLogout.addEventListener('click', function(e) {
     if (e.target === overlayLogout) overlayLogout.style.display = 'none';
 });
 
+// Carrega os dados da conta do usuário e preenche o painel.
 function carregarConta() {
     dadosConta.innerHTML = '<p class="carregando-conta">Carregando dados...</p>';
     fetch('../backend/doadores/minhaConta.php')
@@ -568,6 +602,7 @@ function carregarConta() {
         .catch(function() { dadosConta.innerHTML = '<p>Erro ao carregar dados.</p>'; });
 }
 
+// Salva as alterações da conta no backend.
 function salvarConta() {
     const senha        = document.getElementById('editSenha').value;
     const senhaConfirm = document.getElementById('editSenhaConfirm').value;
@@ -609,9 +644,9 @@ function salvarConta() {
     });
 }
 
+// Verifica se o usuário está autenticado e se sua condição de acesso é válida.
 async function verificarAutenticacaoEIniciar() {
     try {
-        // 1. Verifica a autenticação básica
         const respostaAutenticacao = await fetch('../backend/doadores/minhaConta.php');
         
         if (!respostaAutenticacao.ok || respostaAutenticacao.status === 401 || respostaAutenticacao.status === 403) {
@@ -626,10 +661,8 @@ async function verificarAutenticacaoEIniciar() {
             return;
         }
 
-        // Define o nome do usuário na sessão
         _nomeUsuarioSessao = dados.usuario.nome || '';
         
-        // 2. Verifica a condição do usuário (agora dentro do mesmo escopo)
         const responseCondicao = await fetch('../backend/verifyCondicao.php', {
             method: 'POST',
             headers: {
@@ -647,7 +680,7 @@ async function verificarAutenticacaoEIniciar() {
         if (respostaCondicao.erro === true) {
             alert(respostaCondicao.mensagem);
             window.location.href = '../index.html';
-            return; // Interrompe a execução aqui
+            return;
         } 
         
         if (respostaCondicao.SystemError === true) {
@@ -659,7 +692,6 @@ async function verificarAutenticacaoEIniciar() {
 
         console.log(respostaCondicao.mensagem);
 
-        // 3. Se passou por TODAS as validações, inicia a tela com segurança
         carregarConta(); 
         
     } catch (erro) {
