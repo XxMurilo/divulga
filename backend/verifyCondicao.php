@@ -1,5 +1,5 @@
 <?php
-require_once '../conexaoBD.php';
+require_once 'conexaoBD.php';
 header('Content-Type: application/json; charset=utf-8');
 
 $json_input = file_get_contents('php://input');
