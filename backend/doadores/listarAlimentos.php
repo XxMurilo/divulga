@@ -12,7 +12,8 @@ function normalizarImagem($url) {
     // Ex: /var/www/html/front/uploads/alimentos/x.jpg → uploads/alimentos/x.jpg
     $url = str_replace('\\', '/', $url);
     if (preg_match('#uploads/alimentos/[^/]+$#', $url, $m)) {
-        return $m[0];
+        // Caminho relativo à pasta front/, de onde as páginas logadas fazem a requisição
+        return '../' . $m[0];
     }
     return null;
 }
